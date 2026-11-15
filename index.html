@@ -1,0 +1,713 @@
+<title>Slipstream</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@500&family=Inter:wght@400;600&display=swap">
+<style>
+/* Layout: one reading column; every idea is a full-width figure with a short lead-in and a one-line caption.
+   Colour carries role, the same everywhere: blue = what the client reads, teal = team and agents, orange = now / act here. */
+:root {
+  --bg: #f3f6f6;
+  --surface: #ffffff;
+  --wash: #e6eced;
+  --ink: #13232b;
+  --muted: #56676f;
+  --line: #9aa9b0;
+  --arrow: #5f727a;
+  --client: #1c5fa6;
+  --client-t: #e2edf9;
+  --team: #0e7268;
+  --team-t: #dcf1ee;
+  --hot: #c0440e;
+  --hot-t: #fde7da;
+  --done: #2c7a4c;
+  --done-t: #e1f1e7;
+  --gate: #846400;
+  --gate-t: #faf0cc;
+  --display: "Archivo", "Helvetica Neue", Arial, sans-serif;
+  --body: "Inter", "Segoe UI", Arial, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0e161a; --surface: #162127; --wash: #1d2b32; --ink: #e5eef0; --muted: #9db0b7; --line: #566a72; --arrow: #8fa3ab;
+    --client: #82b7f0; --client-t: #15304b; --team: #62d2c5; --team-t: #0e3531; --hot: #ff9c69; --hot-t: #47210f;
+    --done: #80d49f; --done-t: #123422; --gate: #e9c85c; --gate-t: #3b3110; color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0e161a; --surface: #162127; --wash: #1d2b32; --ink: #e5eef0; --muted: #9db0b7; --line: #566a72; --arrow: #8fa3ab;
+  --client: #82b7f0; --client-t: #15304b; --team: #62d2c5; --team-t: #0e3531; --hot: #ff9c69; --hot-t: #47210f;
+  --done: #80d49f; --done-t: #123422; --gate: #e9c85c; --gate-t: #3b3110; color-scheme: dark;
+}
+
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 16px; line-height: 1.55; }
+.page { max-width: 1040px; margin: 0 auto; padding-block: 40px 80px; padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); display: flex; flex-direction: column; gap: 72px; }
+section { display: flex; flex-direction: column; gap: 28px; }
+.block { display: flex; flex-direction: column; gap: 14px; }
+h1, h2, h3 { font-family: var(--display); margin: 0; text-wrap: balance; letter-spacing: -.01em; }
+h1 { font-size: clamp(44px, 8vw, 76px); font-weight: 700; line-height: 1; }
+h2 { font-size: clamp(26px, 4vw, 34px); font-weight: 700; line-height: 1.15; }
+h3 { font-size: 20px; font-weight: 600; line-height: 1.25; }
+p { margin: 0; max-width: 68ch; }
+.lede { font-size: 20px; color: var(--muted); max-width: 56ch; }
+.eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--hot); }
+.muted { color: var(--muted); }
+code, .mono { font-family: var(--mono); font-size: .86em; }
+a { color: var(--client); }
+:focus-visible { outline: 3px solid var(--hot); outline-offset: 2px; }
+
+.toc { display: flex; flex-wrap: wrap; gap: 8px; }
+.toc a { text-decoration: none; color: var(--ink); border: 1px solid var(--line); border-radius: 999px; padding: 5px 14px; font-size: 14px; background: var(--surface); }
+.toc a:hover { border-color: var(--ink); }
+
+.key { display: flex; flex-wrap: wrap; gap: 8px 20px; font-size: 14px; color: var(--muted); }
+.key span { display: inline-flex; align-items: center; gap: 8px; }
+.key i { width: 14px; height: 14px; border-radius: 4px; border: 1.5px solid; display: inline-block; }
+.k-client { background: var(--client-t); border-color: var(--client); }
+.k-team { background: var(--team-t); border-color: var(--team); }
+.k-hot { background: var(--hot-t); border-color: var(--hot); }
+.k-done { background: var(--done-t); border-color: var(--done); }
+.k-gate { background: var(--gate-t); border-color: var(--gate); border-style: dashed; }
+.k-blocked { background: var(--wash); border-color: var(--line); border-style: dashed; }
+
+figure { margin: 0; display: flex; flex-direction: column; gap: 10px; }
+.fig { background: var(--surface); border: 1px solid var(--wash); border-radius: 10px; padding: 20px; overflow-x: auto; }
+.fig svg { display: block; width: 100%; height: auto; min-width: 700px; }
+figcaption { font-size: 15px; color: var(--muted); max-width: 72ch; }
+
+/* SVG vocabulary */
+svg text { font-family: var(--body); font-size: 13px; fill: var(--ink); }
+svg .b { font-weight: 600; }
+svg .m { fill: var(--muted); }
+svg .s { font-size: 11.5px; }
+svg .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: .07em; text-transform: uppercase; fill: var(--muted); }
+svg .th { fill: var(--hot); }
+svg .tc { fill: var(--client); }
+svg .tt { fill: var(--team); }
+.bx { fill: var(--surface); stroke: var(--line); stroke-width: 1.25; }
+.bx-c { fill: var(--client-t); stroke: var(--client); stroke-width: 1.25; }
+.bx-t { fill: var(--team-t); stroke: var(--team); stroke-width: 1.25; }
+.bx-h { fill: var(--hot-t); stroke: var(--hot); stroke-width: 1.75; }
+.bx-d { fill: var(--done-t); stroke: var(--done); stroke-width: 1.25; }
+.bx-w { fill: var(--wash); stroke: none; }
+.card { fill: var(--surface); stroke: var(--client); stroke-width: 1.25; }
+.ghost { fill: none; stroke: var(--line); stroke-width: 1.25; stroke-dasharray: 4 4; }
+.ghost-t { fill: none; stroke: var(--team); stroke-width: 1.25; stroke-dasharray: 5 4; }
+.ln { fill: none; stroke: var(--arrow); stroke-width: 1.5; }
+.ln-d { fill: none; stroke: var(--arrow); stroke-width: 1.5; stroke-dasharray: 4 4; }
+.ln-h { fill: none; stroke: var(--hot); stroke-width: 2; }
+.ah { fill: var(--arrow); }
+.lane-c { fill: var(--client-t); opacity: .45; }
+.lane-t { fill: var(--team-t); opacity: .45; }
+
+/* Horizon */
+.seg { display: flex; flex-wrap: wrap; gap: 6px; }
+.seg button, .btn { font: 600 14px var(--body); color: var(--ink); background: var(--surface); border: 1px solid var(--line); border-radius: 8px; padding: 7px 12px; cursor: pointer; }
+.seg button:hover, .btn:hover { border-color: var(--ink); }
+.seg button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+#horizon .frame, #horizon .s-past, #horizon .s-now, #horizon .s-future, #horizon .tghost { display: none; }
+#horizon .now .frame, #horizon .past .s-past, #horizon .now .s-now, #horizon .future .s-future, #horizon .future .tghost { display: block; }
+#horizon .future .chips { display: none; }
+#horizon .frame { fill: none; stroke: var(--hot); stroke-width: 2; }
+#horizon .cell { fill: var(--client-t); stroke: var(--client); stroke-width: 1.25; }
+#horizon .past .cell { fill: var(--done-t); stroke: var(--done); }
+#horizon .now .cell.tk { fill: var(--hot-t); stroke: var(--hot); stroke-width: 1.75; }
+#horizon .future .cell.tk { fill: none; stroke: none; }
+#horizon .mini { fill: var(--surface); stroke: var(--client); }
+#horizon .past .mini, #horizon .past .chip { stroke: var(--done); }
+#horizon .chip { fill: var(--surface); stroke: var(--hot); }
+
+/* MoSCoW */
+.hatch { fill: var(--hot); opacity: .28; }
+
+/* Story anatomy */
+.anatomy { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr); gap: 24px; align-items: start; }
+@media (max-width: 800px) { .anatomy { grid-template-columns: minmax(0, 1fr); } }
+.story { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 20px; display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+.story h4 { font-family: var(--display); font-size: 20px; margin: 0; }
+.fields { display: flex; flex-wrap: wrap; gap: 6px; }
+.fields span { font-size: 12.5px; padding: 3px 9px; border-radius: 999px; background: var(--wash); color: var(--muted); }
+.part { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; }
+.num { width: 22px; height: 22px; border-radius: 50%; background: var(--ink); color: var(--bg); font: 600 12px var(--body); display: inline-flex; align-items: center; justify-content: center; flex: none; }
+.part > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
+.part h5 { margin: 0; font: 600 12px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
+.part p, .part li { font-size: 15px; }
+.part ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.tag { font-family: var(--mono); font-size: 11.5px; color: var(--team); background: var(--team-t); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
+.tscroll { overflow-x: auto; }
+table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
+th, td { text-align: left; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--wash); vertical-align: top; }
+th { font-weight: 600; color: var(--muted); font-size: 13px; }
+.notes { display: flex; flex-direction: column; gap: 14px; margin: 0; padding: 0; list-style: none; }
+.notes li { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; font-size: 15.5px; }
+.never { border: 1.5px dashed var(--line); border-radius: 10px; padding: 14px 16px; font-size: 15px; display: flex; flex-direction: column; gap: 6px; }
+.never b { font-family: var(--mono); font-size: 12px; letter-spacing: .07em; text-transform: uppercase; color: var(--hot); font-weight: 500; }
+
+/* SPIDR */
+.spidr { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.sp { background: var(--surface); border: 1px solid var(--wash); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.sp .letter { font: 700 34px/1 var(--display); color: var(--hot); }
+.sp h4 { margin: 0; font: 600 17px var(--display); }
+.sp p { font-size: 14.5px; color: var(--muted); }
+.sp svg { width: 100%; height: auto; margin-top: auto; }
+.first { fill: var(--hot-t); stroke: var(--hot); stroke-width: 1.5; }
+
+/* Task graph */
+.graphwrap { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 20px; align-items: start; }
+@media (max-width: 900px) { .graphwrap { grid-template-columns: minmax(0, 1fr); } }
+.ready { background: var(--surface); border: 1px solid var(--wash); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.ready h4 { margin: 0; font: 600 16px var(--display); }
+.ready ol { margin: 0; padding-left: 20px; display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; }
+.ready small { color: var(--muted); display: block; font-size: 13px; }
+.ready .empty { color: var(--muted); font-size: 14.5px; }
+#graph .node { cursor: default; }
+#graph .node.act { cursor: pointer; }
+#graph .node rect { stroke-width: 1.5; }
+#graph .st-done rect { fill: var(--done-t); stroke: var(--done); }
+#graph .st-ready rect { fill: var(--hot-t); stroke: var(--hot); stroke-width: 2.25; }
+#graph .st-claimed rect { fill: var(--team-t); stroke: var(--team); stroke-width: 2.25; }
+#graph .st-blocked rect { fill: var(--wash); stroke: var(--line); stroke-dasharray: 4 4; }
+#graph .st-gate rect { fill: var(--gate-t); stroke: var(--gate); stroke-dasharray: 6 4; }
+#graph .st-ready .stt { fill: var(--hot); }
+#graph .st-claimed .stt { fill: var(--team); }
+#graph .st-done .stt { fill: var(--done); }
+#graph .st-gate .stt { fill: var(--gate); }
+#graph .edge { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 4; }
+#graph .edge.met { stroke: var(--done); stroke-dasharray: none; }
+#graph .node:focus-visible rect { stroke: var(--ink); stroke-width: 3; }
+
+/* Reference */
+.principles { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 32px; margin: 0; padding: 0; list-style: none; }
+.principles li { padding: 12px 0; border-top: 1px solid var(--line); font-size: 15.5px; }
+.principles b { display: block; font-family: var(--display); font-size: 17px; }
+.none { border-left: 3px solid var(--hot); padding: 4px 0 4px 16px; font-size: 17px; max-width: 60ch; }
+</style>
+
+<main class="page">
+
+<header class="block">
+  <span class="eyebrow">How Tandem plans and delivers projects</span>
+  <h1>Slipstream</h1>
+  <p class="lede">A project is cut into releases. Each release gives the client one outcome they can test themselves. Dates hold and scope flexes.</p>
+  <nav class="toc" aria-label="Sections">
+    <a href="#shape">The shape</a>
+    <a href="#release">One release</a>
+    <a href="#planning">Planning</a>
+    <a href="#building">Building</a>
+    <a href="#decisions">Decisions</a>
+    <a href="#reference">Reference</a>
+  </nav>
+  <div class="key" aria-label="Colour key used in every diagram">
+    <span><i class="k-client"></i>the client reads this</span>
+    <span><i class="k-team"></i>team and coding agents</span>
+    <span><i class="k-hot"></i>now, or act here</span>
+    <span><i class="k-done"></i>done or accepted</span>
+  </div>
+</header>
+
+<section id="shape">
+  <div class="block">
+    <h2>Epics run across. Releases cut down through them.</h2>
+    <p>An epic is something a person does with the product. A release is a slice across the epics that ends with the client testing one outcome. The first slice is thin and touches every epic, so the whole thing works end to end before any part is deep.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 440" role="img" aria-label="A grid with five epics across the top and three releases as rows. Release 1 has one story in every epic. Later releases add more stories. Each release ends with the client testing it, which shapes the next release.">
+        <defs><marker id="m1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <text x="150" y="16" class="s m">Epics: what people do, in the order they do it</text>
+        <g>
+          <rect class="bx-c" x="150" y="28" width="120" height="44" rx="8"/><text x="210" y="55" text-anchor="middle" class="b">Get access</text>
+          <rect class="bx-c" x="282" y="28" width="120" height="44" rx="8"/><text x="342" y="55" text-anchor="middle" class="b">Search</text>
+          <rect class="bx-c" x="414" y="28" width="120" height="44" rx="8"/><text x="474" y="55" text-anchor="middle" class="b">Book</text>
+          <rect class="bx-c" x="546" y="28" width="120" height="44" rx="8"/><text x="606" y="55" text-anchor="middle" class="b">Pay</text>
+          <rect class="bx-c" x="678" y="28" width="120" height="44" rx="8"/><text x="738" y="55" text-anchor="middle" class="b">Manage</text>
+        </g>
+        <!-- Release 1 -->
+        <rect class="bx-h" x="140" y="92" width="668" height="62" rx="10"/>
+        <rect class="card" x="162" y="110" width="96" height="26" rx="5"/><rect class="card" x="294" y="110" width="96" height="26" rx="5"/><rect class="card" x="426" y="110" width="96" height="26" rx="5"/><rect class="card" x="558" y="110" width="96" height="26" rx="5"/><rect class="card" x="690" y="110" width="96" height="26" rx="5"/>
+        <text x="0" y="118" class="b">Release 1</text><text x="0" y="136" class="s m">thin, end to end</text>
+        <path class="ln" d="M808 123H838" marker-end="url(#m1)"/>
+        <rect class="bx-h" x="840" y="95" width="120" height="56" rx="8"/><text x="900" y="118" text-anchor="middle" class="b">Client tests it</text><text x="900" y="136" text-anchor="middle" class="s m">shapes release 2</text>
+        <!-- Release 2 -->
+        <rect class="bx-w" x="140" y="166" width="668" height="98" rx="10"/>
+        <rect class="ghost" x="162" y="182" width="96" height="26" rx="5"/>
+        <rect class="card" x="294" y="182" width="96" height="26" rx="5"/><rect class="card" x="294" y="220" width="96" height="26" rx="5"/>
+        <rect class="card" x="426" y="182" width="96" height="26" rx="5"/><rect class="card" x="426" y="220" width="96" height="26" rx="5"/>
+        <rect class="card" x="558" y="182" width="96" height="26" rx="5"/>
+        <rect class="card" x="690" y="182" width="96" height="26" rx="5"/>
+        <text x="0" y="210" class="b">Release 2</text><text x="0" y="228" class="s m">more depth</text>
+        <path class="ln" d="M808 215H838" marker-end="url(#m1)"/>
+        <rect class="bx" x="840" y="187" width="120" height="56" rx="8"/><text x="900" y="210" text-anchor="middle" class="b">Client tests it</text><text x="900" y="228" text-anchor="middle" class="s m">shapes release 3</text>
+        <!-- Release 3 -->
+        <rect class="bx-w" x="140" y="276" width="668" height="98" rx="10"/>
+        <rect class="card" x="162" y="292" width="96" height="26" rx="5"/>
+        <rect class="card" x="294" y="292" width="96" height="26" rx="5"/>
+        <rect class="ghost" x="426" y="292" width="96" height="26" rx="5"/>
+        <rect class="card" x="558" y="292" width="96" height="26" rx="5"/><rect class="card" x="558" y="330" width="96" height="26" rx="5"/>
+        <rect class="card" x="690" y="292" width="96" height="26" rx="5"/><rect class="card" x="690" y="330" width="96" height="26" rx="5"/>
+        <text x="0" y="320" class="b">Release 3</text><text x="0" y="338" class="s m">and so on</text>
+        <path class="ln" d="M808 325H838" marker-end="url(#m1)"/>
+        <rect class="bx" x="840" y="297" width="120" height="56" rx="8"/><text x="900" y="320" text-anchor="middle" class="b">Client tests it</text><text x="900" y="338" text-anchor="middle" class="s m">accepts in writing</text>
+        <!-- legend -->
+        <rect class="card" x="150" y="388" width="40" height="16" rx="4"/><text x="200" y="401" class="s m">a story: half a day to two days of work, in one epic and one release</text>
+        <rect class="ghost" x="150" y="412" width="40" height="16" rx="4"/><text x="200" y="425" class="s m">nothing for that epic in this release</text>
+      </svg>
+    </div>
+    <figcaption>The example is a booking product. Read a row to see what a release delivers; read a column to see how one part of the product deepens over time.</figcaption>
+  </figure>
+
+  <div class="block">
+    <h3>One plan, read at two levels</h3>
+    <p>The client reads everything above the line, in plain language. The team and its coding agents work below it, where the technical detail lives.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 340" role="img" aria-label="Five stacked levels. Epic, release and story sit above a dashed line and are read by the client. Task and code sit below the line and are worked by the team and agents.">
+        <rect class="bx-c" x="310" y="10" width="240" height="54" rx="8"/><text x="430" y="33" text-anchor="middle" class="b">Epic</text><text x="430" y="51" text-anchor="middle" class="s m">something a person does</text>
+        <rect class="bx-c" x="270" y="72" width="320" height="54" rx="8"/><text x="430" y="95" text-anchor="middle" class="b">Release</text><text x="430" y="113" text-anchor="middle" class="s m">a slice with one testable outcome and a date</text>
+        <rect class="bx-c" x="230" y="134" width="400" height="54" rx="8"/><text x="430" y="157" text-anchor="middle" class="b">Story</text><text x="430" y="175" text-anchor="middle" class="s m">one thing a user can do, with acceptance criteria</text>
+        <path class="ln-d" d="M120 200H940"/>
+        <text x="0" y="194" class="k">above the line</text><text x="0" y="214" class="k">below the line</text>
+        <rect class="bx-t" x="190" y="212" width="480" height="54" rx="8"/><text x="430" y="235" text-anchor="middle" class="b">Task</text><text x="430" y="253" text-anchor="middle" class="s m">a technical step towards a story, up to a day</text>
+        <rect class="bx-t" x="150" y="274" width="560" height="54" rx="8"/><text x="430" y="297" text-anchor="middle" class="b">Code</text><text x="430" y="315" text-anchor="middle" class="s m">pull requests, reviews, decision records</text>
+        <path d="M722 10h10V188h-10" fill="none" stroke="var(--client)" stroke-width="1.75"/>
+        <text x="746" y="88" class="b tc">Client reads this</text><text x="746" y="106" class="s m">plain language, no file names</text><text x="746" y="122" class="s m">written at project start</text>
+        <path d="M722 212h10V328h-10" fill="none" stroke="var(--team)" stroke-width="1.75"/>
+        <text x="746" y="260" class="b tt">Team and agents work here</text><text x="746" y="278" class="s m">technical detail</text><text x="746" y="294" class="s m">written as each release starts</text>
+      </svg>
+    </div>
+    <figcaption>A story belongs to one epic and one release. A small story needs no tasks.</figcaption>
+  </figure>
+</section>
+
+<section id="release">
+  <div class="block">
+    <h2>One release, start to finish</h2>
+    <p>The client is in the loop three times: they make the decisions the release depends on, they can watch the stories move at any time, and they test the outcome themselves. The release review is the only fixed meeting.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 340" role="img" aria-label="A two-lane flow. The team plans and builds. The client makes decisions, follows the stories, then tests the outcome. If the outcome is met the client accepts in writing and the next release is re-planned. If not, the stories are adjusted and building continues.">
+        <defs><marker id="m3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="lane-c" x="0" y="36" width="960" height="108" rx="10"/><text x="12" y="52" class="k">Client</text>
+        <rect class="lane-t" x="0" y="176" width="960" height="108" rx="10"/><text x="12" y="192" class="k">Team and agents</text>
+
+        <rect class="bx-c" x="30" y="60" width="160" height="60" rx="8"/><text x="110" y="86" text-anchor="middle" class="b">Make decisions</text><text x="110" y="104" text-anchor="middle" class="s m">the release depends on</text>
+        <rect class="bx-c" x="220" y="60" width="160" height="60" rx="8"/><text x="300" y="86" text-anchor="middle" class="b">Follow the stories</text><text x="300" y="104" text-anchor="middle" class="s m">in the tracker, any time</text>
+        <rect class="bx-h" x="410" y="60" width="160" height="60" rx="8"/><text x="490" y="86" text-anchor="middle" class="b">Test the outcome</text><text x="490" y="104" text-anchor="middle" class="s m">themselves, hands on</text>
+        <path class="bx" d="M600 90L670 50L740 90L670 130Z"/><text x="670" y="94" text-anchor="middle" class="b">Outcome met?</text>
+        <rect class="bx-d" x="770" y="60" width="160" height="60" rx="8"/><text x="850" y="86" text-anchor="middle" class="b">Accept in writing</text><text x="850" y="104" text-anchor="middle" class="s m">the release is closed</text>
+
+        <rect class="bx-t" x="30" y="200" width="160" height="60" rx="8"/><text x="110" y="226" text-anchor="middle" class="b">Plan the release</text><text x="110" y="244" text-anchor="middle" class="s m">stories, priorities, tasks</text>
+        <rect class="bx-t" x="220" y="200" width="160" height="60" rx="8"/><text x="300" y="226" text-anchor="middle" class="b">Build</text><text x="300" y="244" text-anchor="middle" class="s m">tasks pulled, code merged</text>
+        <rect class="bx-t" x="590" y="200" width="160" height="60" rx="8"/><text x="670" y="226" text-anchor="middle" class="b">Adjust the stories</text><text x="670" y="244" text-anchor="middle" class="s m">agreed with the client</text>
+        <rect class="bx-t" x="770" y="200" width="160" height="60" rx="8"/><text x="850" y="226" text-anchor="middle" class="b">Re-plan what is next</text><text x="850" y="244" text-anchor="middle" class="s m">later stories reshaped</text>
+
+        <path class="ln" d="M110 120V198" marker-end="url(#m3)"/><text x="118" y="164" class="s m">decisions</text>
+        <path class="ln" d="M190 230H218" marker-end="url(#m3)"/>
+        <path class="ln-d" d="M300 200V122" marker-end="url(#m3)"/><text x="308" y="164" class="s m">progress visible</text>
+        <path class="ln" d="M380 215H490V122" marker-end="url(#m3)"/><text x="498" y="164" class="s m">release ready</text>
+        <path class="ln" d="M570 90H598" marker-end="url(#m3)"/>
+        <path class="ln" d="M740 90H768" marker-end="url(#m3)"/><text x="754" y="80" text-anchor="middle" class="s m">yes</text>
+        <path class="ln" d="M670 130V198" marker-end="url(#m3)"/><text x="680" y="164" class="s m">not yet</text>
+        <path class="ln" d="M590 245H382" marker-end="url(#m3)"/>
+        <path class="ln" d="M850 120V198" marker-end="url(#m3)"/>
+        <path class="ln" d="M850 260V306H110V262" marker-end="url(#m3)"/><text x="480" y="326" text-anchor="middle" class="s m">next release, reshaped by what the client found</text>
+      </svg>
+    </div>
+    <figcaption>Acceptance is in writing. A release that misses its outcome goes back to building with adjusted stories, not on to the next release.</figcaption>
+  </figure>
+</section>
+
+<section id="planning">
+  <div class="block">
+    <h2>Plan in outline far ahead, in detail close up</h2>
+    <p>Every story is written at the start of the project. Tasks are written only for the release that is about to start, from the code as it is that day. Later releases will change after the client tests the earlier ones, so detailed planning for them would be wasted.</p>
+    <div class="seg" role="group" aria-label="Choose a moment in the project">
+      <button type="button" id="hz-start" data-now="-1" aria-pressed="false">Project start</button>
+      <button type="button" id="hz-1" data-now="0" aria-pressed="false">Release 1 starts</button>
+      <button type="button" id="hz-2" data-now="1" aria-pressed="true">Release 2 starts</button>
+      <button type="button" id="hz-3" data-now="2" aria-pressed="false">Release 3 starts</button>
+      <button type="button" id="hz-4" data-now="3" aria-pressed="false">Release 4 starts</button>
+    </div>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg id="horizon" viewBox="0 0 960 296" role="img" aria-label="Four releases as columns with rows for outcome, stories and tasks. Outcomes and stories exist for every release from the start. Tasks exist only for the release in progress and those already accepted.">
+        <text x="0" y="67" class="b">Outcome</text>
+        <text x="0" y="125" class="b">Stories</text><text x="0" y="142" class="s m">whole project,</text><text x="0" y="157" class="s m">from the start</text>
+        <text x="0" y="222" class="b">Tasks</text><text x="0" y="239" class="s m">one release</text><text x="0" y="254" class="s m">at a time</text>
+      </svg>
+    </div>
+    <figcaption>Pick a moment above. Stories are always there for every release; tasks appear only when a release begins.</figcaption>
+  </figure>
+
+  <div class="block">
+    <h3>Dates hold. Scope flexes.</h3>
+    <p>Every story has a priority for its release: Must, Should, Could, or Won't this time. Could-haves are the release's contingency. When something overruns, they move to a later release first, then Should-haves, by agreement with the client.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 250" role="img" aria-label="Two bars measured against a fixed release date. As planned, Must takes about 60 percent of the days, Should 20 and Could 20. After an overrun, Must has grown, Should still fits, and Could has moved past the date into the next release.">
+        <path class="ln-h" d="M770 30V214"/>
+        <text x="770" y="20" text-anchor="middle" class="b th">Release date holds</text>
+        <path class="ln" d="M170 214H930"/>
+        <text x="170" y="234" text-anchor="middle" class="s m">release starts</text><text x="770" y="234" text-anchor="middle" class="s m">release date</text><text x="860" y="234" text-anchor="middle" class="s m">next release</text>
+
+        <text x="0" y="80" class="b">As planned</text>
+        <rect class="bx-h" x="170" y="54" width="360" height="44" rx="6"/><text x="350" y="81" text-anchor="middle" class="b">Must · at most about 60%</text>
+        <rect class="bx-c" x="530" y="54" width="120" height="44" rx="6"/><text x="590" y="81" text-anchor="middle" class="b">Should</text>
+        <rect class="bx" x="650" y="54" width="120" height="44" rx="6"/><text x="710" y="81" text-anchor="middle" class="b">Could · 20%</text>
+
+        <text x="0" y="158" class="b">After an overrun</text>
+        <rect class="bx-h" x="170" y="132" width="450" height="44" rx="6"/><rect class="hatch" x="530" y="132" width="90" height="44" rx="6"/>
+        <text x="350" y="159" text-anchor="middle" class="b">Must</text><text x="575" y="159" text-anchor="middle" class="s b">overrun</text>
+        <rect class="bx-c" x="620" y="132" width="120" height="44" rx="6"/><text x="680" y="159" text-anchor="middle" class="b">Should</text>
+        <rect class="ghost" x="800" y="132" width="120" height="44" rx="6"/><text x="860" y="159" text-anchor="middle" class="b m">Could</text>
+        <text x="860" y="196" text-anchor="middle" class="s m">moved, by agreement</text>
+      </svg>
+    </div>
+    <figcaption>If every story in a release is a Must, there is nothing to give way and the date moves instead. The date moves only when a Must cannot be met.</figcaption>
+  </figure>
+
+  <div class="block">
+    <h3>What a story looks like</h3>
+    <p>A story states the outcome first and says nothing about files or implementation. Its acceptance criteria are the contract: what is in them is required and proven, what is not in them is not required.</p>
+  </div>
+  <div class="anatomy">
+    <article class="story" aria-label="Example story">
+      <h4>Guests can cancel a booking</h4>
+      <div class="fields" aria-label="Fields held by the tracker"><span>Epic: Manage</span><span>Release 2</span><span>Should</span><span>1.5 days</span></div>
+      <div class="part"><span class="num">1</span><div><p>A guest can cancel their own booking from their account and is told what they will be refunded, so nobody has to email support.</p></div></div>
+      <div class="part"><span class="num">2</span><div><h5>Requirements</h5>
+        <div class="tscroll"><table><thead><tr><th>Need</th><th>Detail</th></tr></thead><tbody>
+          <tr><td>Cancel</td><td>From the booking page, with a confirmation step</td></tr>
+          <tr><td>Refund shown</td><td>Amount stated before the guest confirms</td></tr>
+          <tr><td>Who can cancel</td><td>The guest who made the booking, and staff</td></tr>
+        </tbody></table></div></div></div>
+      <div class="part"><span class="num">3</span><div><h5>Not included</h5><ul><li>Changing the dates of a booking (Release 3)</li><li>Partial refunds</li></ul></div></div>
+      <div class="part"><span class="num">4</span><div><h5>Acceptance criteria</h5><ul>
+        <li>A guest cancels their own booking and it shows as cancelled <span class="tag">browser</span></li>
+        <li>A guest cannot cancel someone else's booking <span class="tag">api</span></li>
+        <li>Staff can still cancel any booking <span class="tag">api</span></li>
+        <li>The refund shown matches the amount refunded <span class="tag">db</span></li>
+      </ul></div></div>
+      <div class="part"><span class="num">5</span><div><h5>Blocked on</h5><p>The client confirms the refund window, in days, before the release starts.</p></div></div>
+    </article>
+    <div class="block">
+      <ol class="notes">
+        <li><span class="num">1</span><span><b>Outcome first.</b> Who gets what and why, in one or two sentences.</span></li>
+        <li><span class="num">2</span><span><b>Requirements as a table.</b> Needs and their detail, not prose.</span></li>
+        <li><span class="num">3</span><span><b>Say what is left out,</b> and the release where it arrives if known.</span></li>
+        <li><span class="num">4</span><span><b>Each criterion is one checkable outcome</b> and says how it is proved. A criterion that forbids something is paired with one showing the allowed path still works.</span></li>
+        <li><span class="num">5</span><span><b>Anything the client must supply</b> is named: who, what, in which format, by when.</span></li>
+      </ol>
+      <div class="never"><b>Never in a story</b><span>File paths, function names, or how to build it. Constraints are stated in words, such as "reuses the existing access roles". The agent finds the rest in the code when the release starts.</span></div>
+      <p class="muted" style="font-size:15px">Epic, release, priority, estimate and assignee are fields in the tracker, not text in the body.</p>
+    </div>
+  </div>
+
+  <div class="block">
+    <h3>Splitting a story that is too big</h3>
+    <p>Split a story when it is over two days, hides an unknown, or part of it could ship earlier. Otherwise leave it whole. There are five ways to cut; split on one, then look again.</p>
+    <div class="key"><span><i class="k-hot"></i>ships first</span><span><i class="k-blocked"></i>follows later</span></div>
+  </div>
+  <div class="spidr">
+    <div class="sp"><span class="letter">S</span><h4>Spike</h4><p>Something must be learned before the work can be estimated. The output is a decision, not code to keep.</p>
+      <svg viewBox="0 0 220 70" role="img" aria-label="A question leads to a decision first; the build follows later."><circle class="first" cx="22" cy="35" r="14"/><text x="22" y="40" text-anchor="middle" class="b">?</text><path class="ln" d="M38 35H58"/><polygon class="ah" points="62,35 56,31.5 56,38.5"/><rect class="first" x="64" y="21" width="66" height="28" rx="5"/><text x="97" y="39" text-anchor="middle" class="s b">decision</text><path class="ln" d="M132 35H148"/><polygon class="ah" points="152,35 146,31.5 146,38.5"/><rect class="ghost" x="154" y="21" width="62" height="28" rx="5"/><text x="185" y="39" text-anchor="middle" class="s m">build</text></svg></div>
+    <div class="sp"><span class="letter">P</span><h4>Path</h4><p>Users can take more than one route to the same end.</p>
+      <svg viewBox="0 0 220 70" role="img" aria-label="Two routes from one start: sign in with a password first, a magic link later."><circle class="ah" cx="12" cy="35" r="4"/><path class="ln" d="M12 35H44L84 18"/><path class="ln-d" d="M44 35L84 52"/><rect class="first" x="84" y="6" width="130" height="24" rx="5"/><text x="149" y="22" text-anchor="middle" class="s b">password</text><rect class="ghost" x="84" y="40" width="130" height="24" rx="5"/><text x="149" y="56" text-anchor="middle" class="s m">magic link</text></svg></div>
+    <div class="sp"><span class="letter">I</span><h4>Interface</h4><p>The same thing is delivered through more than one surface.</p>
+      <svg viewBox="0 0 220 70" role="img" aria-label="One capability delivered as an API first and a page later."><rect class="bx" x="6" y="21" width="74" height="28" rx="5"/><text x="43" y="39" text-anchor="middle" class="s b">cancel</text><path class="ln" d="M80 35L114 18"/><path class="ln-d" d="M80 35L114 52"/><rect class="first" x="114" y="6" width="100" height="24" rx="5"/><text x="164" y="22" text-anchor="middle" class="s b">API</text><rect class="ghost" x="114" y="40" width="100" height="24" rx="5"/><text x="164" y="56" text-anchor="middle" class="s m">page</text></svg></div>
+    <div class="sp"><span class="letter">D</span><h4>Data</h4><p>Some kinds of data are harder than others.</p>
+      <svg viewBox="0 0 220 70" role="img" aria-label="One country's data first; the other countries later."><rect class="first" x="6" y="4" width="208" height="18" rx="4"/><text x="110" y="17" text-anchor="middle" class="s b">one country</text><rect class="ghost" x="6" y="27" width="208" height="18" rx="4"/><text x="110" y="40" text-anchor="middle" class="s m">the rest</text><rect class="ghost" x="6" y="50" width="208" height="18" rx="4"/></svg></div>
+    <div class="sp"><span class="letter">R</span><h4>Rule</h4><p>Some business rules can be relaxed at first and tightened later.</p>
+      <svg viewBox="0 0 220 70" role="img" aria-label="Refund any booking first; add the time limit later."><rect class="first" x="6" y="21" width="96" height="28" rx="5"/><text x="54" y="39" text-anchor="middle" class="s b">any refund</text><text x="110" y="40" text-anchor="middle" class="b m">+</text><rect class="ghost" x="118" y="21" width="96" height="28" rx="5"/><text x="166" y="39" text-anchor="middle" class="s m">time limit</text></svg></div>
+  </div>
+</section>
+
+<section id="building">
+  <div class="block">
+    <h2>Work is pulled, not assigned</h2>
+    <p>Tasks are linked by what they depend on. Status is worked out from those links and never set by hand. The ready set is every task with nothing in its way; the one that unblocks most is taken first. Starting a task is a claim by a named person.</p>
+    <div class="key">
+      <span><i class="k-hot"></i>ready</span><span><i class="k-team"></i>in progress (claimed)</span><span><i class="k-done"></i>done</span><span><i class="k-blocked"></i>blocked</span><span><i class="k-gate"></i>waiting on a client decision</span>
+    </div>
+  </div>
+  <figure>
+    <div class="graphwrap">
+      <div class="fig">
+        <svg id="graph" viewBox="0 0 960 310" role="group" aria-label="Task dependency graph for the cancel-a-booking story. Select a ready task to claim it, select it again to finish it, and select the client decision to mark it decided."></svg>
+      </div>
+      <aside class="ready" aria-live="polite">
+        <h4>Ready set</h4>
+        <ol id="readylist"></ol>
+        <p class="empty" id="readyempty" hidden>Nothing is ready. Everything left is in progress, done, or waiting.</p>
+        <button type="button" class="btn" id="graphreset">Start again</button>
+      </aside>
+    </div>
+    <figcaption>Try it: select a ready task to claim it, and again to finish it. Select the client decision to settle it. Watch what becomes ready.</figcaption>
+  </figure>
+
+  <div class="block">
+    <h3>One task, from claim to merge</h3>
+    <p>People steer; agents investigate and build. An agent never starts coding on its own plan and never merges. Two checkpoints belong to a person: the plan, and the merge.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 324" role="img" aria-label="A two-lane flow. The developer claims a task, the agent investigates and plans, the developer approves the plan, the agent builds and proves each criterion, the developer reviews and merges. Merging recomputes status and makes new tasks ready.">
+        <defs><marker id="m6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <rect class="lane-c" x="0" y="36" width="960" height="96" rx="10"/><text x="12" y="52" class="k">Developer</text>
+        <rect class="lane-t" x="0" y="160" width="960" height="96" rx="10"/><text x="12" y="176" class="k">Coding agent</text>
+
+        <rect class="bx" x="10" y="62" width="144" height="56" rx="8"/><text x="82" y="86" text-anchor="middle" class="b">Claim a task</text><text x="82" y="104" text-anchor="middle" class="s m">from the ready set</text>
+        <rect class="bx-t" x="167" y="184" width="144" height="56" rx="8"/><text x="239" y="208" text-anchor="middle" class="b">Investigate, plan</text><text x="239" y="226" text-anchor="middle" class="s m">reads today's code</text>
+        <rect class="bx-h" x="324" y="62" width="144" height="56" rx="8"/><text x="396" y="86" text-anchor="middle" class="b">Approve the plan</text><text x="396" y="104" text-anchor="middle" class="s m">before any code</text>
+        <rect class="bx-t" x="481" y="184" width="144" height="56" rx="8"/><text x="553" y="208" text-anchor="middle" class="b">Build</text><text x="553" y="226" text-anchor="middle" class="s m">only what was planned</text>
+        <rect class="bx-t" x="638" y="184" width="144" height="56" rx="8"/><text x="710" y="208" text-anchor="middle" class="b">Prove each criterion</text><text x="710" y="226" text-anchor="middle" class="s m">with real output</text>
+        <rect class="bx-h" x="795" y="62" width="144" height="56" rx="8"/><text x="867" y="86" text-anchor="middle" class="b">Review and merge</text><text x="867" y="104" text-anchor="middle" class="s m">a person merges</text>
+
+        <path class="ln" d="M154 90H239V182" marker-end="url(#m6)"/>
+        <path class="ln" d="M311 212H396V120" marker-end="url(#m6)"/>
+        <path class="ln" d="M468 90H553V182" marker-end="url(#m6)"/>
+        <path class="ln" d="M625 212H636" marker-end="url(#m6)"/>
+        <path class="ln" d="M782 212H867V120" marker-end="url(#m6)"/>
+        <path class="ln-d" d="M350 118V148H285V182" marker-end="url(#m6)"/><text x="318" y="143" text-anchor="middle" class="s m">revise</text>
+        <path class="ln-d" d="M820 118V148H600V182" marker-end="url(#m6)"/><text x="710" y="143" text-anchor="middle" class="s m">fix</text>
+        <path class="ln" d="M867 62V22H82V60" marker-end="url(#m6)"/><text x="474" y="15" text-anchor="middle" class="s m">merged: status recomputes, newly unblocked tasks join the ready set</text>
+
+        <path class="ln-d" d="M553 240V268"/>
+        <rect class="ghost-t" x="481" y="268" width="301" height="46" rx="8"/><text x="493" y="287" class="s b">Material, non-obvious decision on the way?</text><text x="493" y="303" class="s m">Write a decision record with the change.</text>
+      </svg>
+    </div>
+    <figcaption>Proof means the decisive lines of real output for every acceptance criterion, kept in the pull request. An agent may propose that a task is done; a person confirms it.</figcaption>
+  </figure>
+</section>
+
+<section id="decisions">
+  <div class="block">
+    <h2>Decisions are written down once</h2>
+    <p>A decision that is material and not obvious from the code gets a decision record (an ADR): a short, numbered file in the repository with the context, the choice, the alternatives and the consequences. Stories and tasks point to the record instead of restating it. A spike that ends in a decision ends in a record.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 170" role="img" aria-label="Left: three questions. If any answer is yes, write a decision record; if all are no, write nothing. Right: an accepted record is never edited; a later record supersedes it.">
+        <defs><marker id="m7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
+        <text x="0" y="12" class="k">When to write one</text>
+        <rect class="bx" x="0" y="24" width="370" height="36" rx="18"/><text x="18" y="47">Is it costly to reverse?</text>
+        <rect class="bx" x="0" y="68" width="370" height="36" rx="18"/><text x="18" y="91">Would a reasonable person choose differently?</text>
+        <rect class="bx" x="0" y="112" width="370" height="36" rx="18"/><text x="18" y="135">Does a client decision shape the design?</text>
+        <path class="ln" d="M376 30h8V142h-8"/>
+        <path class="ln" d="M384 86H402V58H418" marker-end="url(#m7)"/>
+        <path class="ln" d="M402 86V124H418" marker-end="url(#m7)"/>
+        <rect class="bx-h" x="420" y="34" width="190" height="48" rx="8"/><text x="515" y="54" text-anchor="middle" class="b">Write a decision record</text><text x="515" y="71" text-anchor="middle" class="s m">if any answer is yes</text>
+        <rect class="ghost" x="420" y="100" width="190" height="48" rx="8"/><text x="515" y="120" text-anchor="middle" class="b m">No record</text><text x="515" y="137" text-anchor="middle" class="s m">the code already says it</text>
+
+        <text x="660" y="12" class="k">How one changes</text>
+        <rect class="bx" x="660" y="24" width="130" height="58" rx="8"/><text x="672" y="46" class="s m" style="font-family:var(--mono)">ADR-004</text><text x="672" y="66" class="b m">Superseded</text>
+        <path class="ln" d="M790 53H828" marker-end="url(#m7)"/>
+        <rect class="bx-d" x="830" y="24" width="130" height="58" rx="8"/><text x="842" y="46" class="s m" style="font-family:var(--mono)">ADR-009</text><text x="842" y="66" class="b">Accepted</text>
+        <text x="660" y="108" class="s m">An accepted record is never edited.</text>
+        <text x="660" y="126" class="s m">A change of mind is a new record</text>
+        <text x="660" y="144" class="s m">that supersedes the old one.</text>
+      </svg>
+    </div>
+    <figcaption>The test keeps records rare and useful. Nothing a reader can see by reading the code needs one.</figcaption>
+  </figure>
+</section>
+
+<section id="reference">
+  <div class="block">
+    <h2>Reference</h2>
+    <p class="none">There are no sprints, stand-ups, story points or velocity.</p>
+  </div>
+  <div class="block">
+    <h3>Principles</h3>
+    <ul class="principles">
+      <li><b>Outcomes before tasks</b>A release is defined by something the client can test, not by a list of work.</li>
+      <li><b>Plain language above the line</b>The client reads stories. The team and its agents work in tasks.</li>
+      <li><b>Outline far ahead, detail close up</b>Stories for the project; tasks for the next release only.</li>
+      <li><b>Dates hold; scope flexes</b>Priorities decide what gives way.</li>
+      <li><b>Acceptance criteria are the contract</b>What is in them is required and proven.</li>
+      <li><b>People steer; agents investigate and build</b>People set priorities, approve plans and merge.</li>
+      <li><b>Decisions are written down once</b>Material, non-obvious choices get a decision record.</li>
+    </ul>
+  </div>
+  <div class="block">
+    <h3>Who does what</h3>
+    <div class="tscroll"><table>
+      <thead><tr><th>Role</th><th>Does</th></tr></thead>
+      <tbody>
+        <tr><td>Technical PM</td><td>Writes epics and stories, sets priorities with the client, runs release planning and review</td></tr>
+        <tr><td>Client lead</td><td>Owns communication with the client, chases client decisions, sends release updates</td></tr>
+        <tr><td>Developer</td><td>Approves task breakdowns and agent plans, reviews, merges, writes decision records</td></tr>
+        <tr><td>Coding agent</td><td>Investigates, drafts stories and tasks, implements, proves each criterion with real output</td></tr>
+        <tr><td>Client</td><td>Follows stories in the tracker, makes the decisions each release needs, tests the outcome, accepts in writing</td></tr>
+      </tbody>
+    </table></div>
+    <p class="muted" style="font-size:15px">One person can hold more than one role.</p>
+  </div>
+  <div class="block">
+    <h3>In any tracker</h3>
+    <p>Slipstream is defined by its concepts, not a tool. Stories live in the tracker the client reads. Tasks live there or in the repository, with the other as a mirror. Decision records always live in the repository.</p>
+    <div class="tscroll"><table>
+      <thead><tr><th>Concept</th><th>Jira</th><th>GitHub</th><th>Monday</th></tr></thead>
+      <tbody>
+        <tr><td>Epic</td><td>Epic</td><td>Parent issue</td><td>Item on an epics board</td></tr>
+        <tr><td>Release</td><td>Fix version</td><td>Milestone</td><td>Group</td></tr>
+        <tr><td>Story</td><td>Story</td><td>Sub-issue of the epic</td><td>Item</td></tr>
+        <tr><td>Task</td><td>Sub-task</td><td>Sub-issue of the story</td><td>Subitem</td></tr>
+        <tr><td>Priority</td><td>Label or custom field</td><td>Project field or label</td><td>Status column</td></tr>
+        <tr><td>Estimate, in days</td><td>Original estimate</td><td>Project number field</td><td>Numbers column</td></tr>
+        <tr><td>Dependency</td><td>"Blocks" link</td><td>"Blocked by" relation</td><td>Dependency column</td></tr>
+        <tr><td>Claim</td><td>Assignee and In Progress</td><td>Assignee</td><td>Person column</td></tr>
+        <tr><td>Client decision</td><td>Linked issue on the client</td><td>Labelled issue</td><td>Item in a client group</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+</main>
+
+<script>
+(function () {
+  var NS = 'http://www.w3.org/2000/svg';
+  function el(name, attrs, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    return n;
+  }
+
+  /* Planning horizon */
+  var hz = document.getElementById('horizon');
+  var cols = [];
+  for (var i = 0; i < 4; i++) {
+    var x = 170 + i * 194, g = el('g', { 'class': 'col' });
+    g.appendChild(el('rect', { 'class': 'frame', x: x - 7, y: 34, width: 194, height: 252, rx: 10 }));
+    g.appendChild(el('text', { x: x, y: 24, 'class': 'b' }, 'Release ' + (i + 1)));
+    g.appendChild(el('text', { x: x + 180, y: 24, 'text-anchor': 'end', 'class': 's m s-past' }, 'accepted'));
+    g.appendChild(el('text', { x: x + 180, y: 24, 'text-anchor': 'end', 'class': 's b th s-now' }, 'now'));
+    g.appendChild(el('text', { x: x + 180, y: 24, 'text-anchor': 'end', 'class': 's m s-future' }, 'ahead'));
+    g.appendChild(el('rect', { 'class': 'cell', x: x, y: 44, width: 180, height: 36, rx: 7 }));
+    g.appendChild(el('text', { x: x + 90, y: 67, 'text-anchor': 'middle', 'class': 's' }, 'one testable outcome, one date'));
+    g.appendChild(el('rect', { 'class': 'cell', x: x, y: 90, width: 180, height: 80, rx: 7 }));
+    for (var r = 0; r < 2; r++) for (var c = 0; c < 3; c++)
+      g.appendChild(el('rect', { 'class': 'mini', x: x + 12 + c * 54, y: 100 + r * 22, width: 48, height: 16, rx: 4 }));
+    g.appendChild(el('text', { x: x + 90, y: 161, 'text-anchor': 'middle', 'class': 's m s-past' }, 'delivered'));
+    g.appendChild(el('text', { x: x + 90, y: 161, 'text-anchor': 'middle', 'class': 's m s-now' }, 'refined with the client'));
+    g.appendChild(el('text', { x: x + 90, y: 161, 'text-anchor': 'middle', 'class': 's m s-future' }, 'written; expected to change'));
+    g.appendChild(el('rect', { 'class': 'cell tk', x: x, y: 180, width: 180, height: 96, rx: 7 }));
+    var chips = el('g', { 'class': 'chips' });
+    for (var r2 = 0; r2 < 2; r2++) for (var c2 = 0; c2 < 4; c2++)
+      chips.appendChild(el('rect', { 'class': 'chip', x: x + 12 + c2 * 40, y: 192 + r2 * 20, width: 34, height: 14, rx: 3 }));
+    g.appendChild(chips);
+    g.appendChild(el('text', { x: x + 90, y: 262, 'text-anchor': 'middle', 'class': 's m s-past' }, 'done'));
+    g.appendChild(el('text', { x: x + 90, y: 262, 'text-anchor': 'middle', 'class': 's b th s-now' }, "written from today's code"));
+    var gh = el('g', { 'class': 'tghost' });
+    gh.appendChild(el('rect', { 'class': 'ghost', x: x + 6, y: 186, width: 168, height: 84, rx: 7 }));
+    gh.appendChild(el('text', { x: x + 90, y: 232, 'text-anchor': 'middle', 'class': 's m' }, 'not written yet'));
+    g.appendChild(gh);
+    hz.appendChild(g);
+    cols.push(g);
+  }
+  var hzBtns = Array.prototype.slice.call(document.querySelectorAll('.seg button'));
+  function setNow(now) {
+    cols.forEach(function (g, i) {
+      g.setAttribute('class', 'col ' + (i < now ? 'past' : i === now ? 'now' : 'future'));
+    });
+    hzBtns.forEach(function (b) { b.setAttribute('aria-pressed', String(Number(b.dataset.now) === now)); });
+  }
+  hzBtns.forEach(function (b) { b.addEventListener('click', function () { setNow(Number(b.dataset.now)); }); });
+  setNow(1);
+
+  /* Task graph */
+  var W = 170, H = 56;
+  var nodes = [
+    { id: 'T1', title: 'Bookings store', deps: [], x: 20, y: 120 },
+    { id: 'G1', title: 'Refund window', deps: [], x: 20, y: 230, gate: true },
+    { id: 'T7', title: 'Audit log entry', deps: ['T1'], x: 265, y: 20 },
+    { id: 'T2', title: 'Cancel endpoint', deps: ['T1'], x: 265, y: 120 },
+    { id: 'T3', title: 'Refund rule', deps: ['G1'], x: 265, y: 230 },
+    { id: 'T8', title: 'Email template', deps: [], x: 510, y: 20 },
+    { id: 'T4', title: 'Cancel button', deps: ['T2'], x: 510, y: 120 },
+    { id: 'T5', title: 'Refund payment', deps: ['T2', 'T3'], x: 510, y: 230 },
+    { id: 'T6', title: 'Confirmation email', deps: ['T8', 'T4', 'T5'], x: 755, y: 120 }
+  ];
+  var byId = {};
+  nodes.forEach(function (n) { byId[n.id] = n; });
+  var state;
+  function reset() { state = { done: { T1: true }, claimed: { T7: 'Sam' } }; }
+  function status(n) {
+    if (state.done[n.id]) return 'done';
+    if (n.gate) return 'gate';
+    if (!n.deps.every(function (d) { return state.done[d]; })) {
+      return n.deps.some(function (d) { return byId[d].gate && !state.done[d]; }) ? 'gated' : 'blocked';
+    }
+    return state.claimed[n.id] ? 'claimed' : 'ready';
+  }
+  function unblocks(id) {
+    var seen = {}, stack = [id], count = 0;
+    while (stack.length) {
+      var cur = stack.pop();
+      nodes.forEach(function (n) {
+        if (n.deps.indexOf(cur) >= 0 && !seen[n.id]) { seen[n.id] = true; if (!state.done[n.id]) count++; stack.push(n.id); }
+      });
+    }
+    return count;
+  }
+  function act(n) {
+    var s = status(n);
+    if (s === 'gate') state.done[n.id] = true;
+    else if (s === 'ready') state.claimed[n.id] = 'you';
+    else if (s === 'claimed') { state.done[n.id] = true; delete state.claimed[n.id]; }
+    else return;
+    draw(n.id);
+  }
+  var svg = document.getElementById('graph');
+  var list = document.getElementById('readylist'), empty = document.getElementById('readyempty');
+  function draw(focusId) {
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    nodes.forEach(function (n) {
+      n.deps.forEach(function (d) {
+        var s = byId[d];
+        svg.appendChild(el('path', { 'class': 'edge' + (state.done[d] ? ' met' : ''), d: 'M' + (s.x + W) + ' ' + (s.y + H / 2) + 'L' + n.x + ' ' + (n.y + H / 2) }));
+      });
+    });
+    var ready = [];
+    nodes.forEach(function (n) {
+      var s = status(n), u = unblocks(n.id);
+      var cls = s === 'gated' ? 'blocked' : s;
+      var label = { done: n.gate ? 'decided' : 'done', gate: 'open: select to decide', ready: 'ready · unblocks ' + u, claimed: 'in progress · ' + state.claimed[n.id], blocked: 'blocked', gated: 'waiting on the client' }[s];
+      var actionable = s === 'ready' || s === 'claimed' || s === 'gate';
+      var g = el('g', { 'class': 'node st-' + cls + (actionable ? ' act' : ''), 'data-id': n.id });
+      if (actionable) {
+        g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
+        g.setAttribute('aria-label', n.title + ', ' + label + '. ' + (s === 'ready' ? 'Claim it.' : s === 'claimed' ? 'Finish it.' : 'Mark as decided.'));
+        g.addEventListener('click', function () { act(n); });
+        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(n); } });
+      }
+      g.appendChild(el('rect', { x: n.x, y: n.y, width: W, height: H, rx: n.gate ? 28 : 8 }));
+      g.appendChild(el('text', { x: n.x + 14, y: n.y + 24, 'class': 'b' }, (n.gate ? 'Client: ' : '') + n.title));
+      g.appendChild(el('text', { x: n.x + 14, y: n.y + 42, 'class': 's m stt' }, label));
+      svg.appendChild(g);
+      if (s === 'ready') ready.push({ n: n, u: u });
+    });
+    ready.sort(function (a, b) { return b.u - a.u; });
+    list.innerHTML = '';
+    ready.forEach(function (r) {
+      var li = document.createElement('li');
+      li.textContent = r.n.title;
+      var sm = document.createElement('small');
+      sm.textContent = r.u ? 'unblocks ' + r.u + (r.u === 1 ? ' task' : ' tasks') : 'unblocks nothing else';
+      li.appendChild(sm);
+      list.appendChild(li);
+    });
+    list.hidden = !ready.length; empty.hidden = !!ready.length;
+    if (focusId) { var f = svg.querySelector('[data-id="' + focusId + '"][tabindex]'); if (f) f.focus(); }
+  }
+  document.getElementById('graphreset').addEventListener('click', function () { reset(); draw(); });
+  reset(); draw();
+})();
+</script>
