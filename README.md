@@ -23,7 +23,7 @@ The name is from cycling: each accepted release clears the air for the next, and
 | Epic | Something a person does, in plain words | Client and team | Project start | Spans releases |
 | Release | A slice across the epics with one testable outcome and a date | Client and team | Project start; re-planned after each review | Two to six weeks |
 | Story | One thing a user can do, with acceptance criteria | Client and team | Project start, for every release | Half a day to two days |
-| Task | A technical step towards a story | Team and agents | Release start, for that release only | Up to a day |
+| Task | A technical step towards a story | Team and agents | Release start, for that release only, by the technical PM | Up to a day |
 
 Epics run across; releases cut down through them. A story belongs to one epic and one release. The first release is thin and end to end: it touches most epics lightly so the whole thing works before any part is deep.
 
@@ -111,9 +111,57 @@ Split on one axis, then look again. A spike produces a decision and its evidence
 
 ## Tasks
 
-Tasks hold the technical detail. At the start of a release an agent reads the code as it is that day and proposes the tasks for that release's stories; a developer approves them.
+Tasks hold the technical detail. A task is a working note for the team, not a contract: it adds only what the story leaves out. Outcome, scope, priority and release are inherited from the story.
 
-A task has a one-sentence description, the story it serves, what it depends on, and notes from the investigation.
+The technical PM sets out every task for a release before building begins:
+
+1. A coding agent reads the code as it is that day and drafts the tasks and their dependencies for the release's stories.
+2. The technical PM corrects the direction: approach, order, what to reuse, which decisions need a record first.
+3. The technical PM publishes the task graph. Developers pull from it.
+
+Developers are free within a task and may add or split tasks inside a story. Anything that changes the approach or the dependencies comes back to the technical PM.
+
+```markdown
+<What changes, in one sentence>
+
+Story: <link>
+Depends on: <tasks, or a client decision>
+
+## Notes
+
+- <Pattern to follow, what to check first, exact names and counts>
+
+## Done when
+
+- <Only what the story's criteria do not already prove>
+```
+
+- The title names the change, not the user outcome.
+- File and function names are fine here; a task is short-lived.
+- "Done when" is usually empty. A task is done when it is merged and its share of the story's criteria is proven. Add a line only for a technical condition the client never sees.
+- Upkeep with no story, such as dependency upgrades or pipeline fixes, sits as tasks under a standing maintenance epic.
+
+## Dependencies and the ready set
+
+There is one dependency graph per release. It is drawn between tasks and runs across stories: a task may depend on a task in another story, or on a client decision.
+
+The graph is built from each task's "Depends on". Record it as a dependency link where the tracker has one, so the ready set can be computed instead of read off the ticket text.
+
+- **Nobody works out what to start.** The ready set is computed from the graph: every task with nothing in its way.
+- **A story's state is read off its tasks.** It is in play when one of its tasks is ready or claimed, waiting when none are, done when all are. It is never kept separately.
+- **Stories carry rough links first.** Before a release has tasks, a story's "Depends on" orders the work and helps decide which release it lands in. Once the tasks exist, they are the source of truth and the story-level view is a roll-up of them.
+- **Each developer sees their own stories first.** A ready set lists ready tasks in the stories that developer owns, then everyone else's, each group ordered by how much it unblocks.
+
+## Ownership
+
+A developer can own a story, or a whole epic. The owner holds its design: how it should be built and why.
+
+- The technical PM names owners when a release's tasks are set out, or earlier.
+- Owning is not doing. Anyone may claim a ready task in any story, most usefully when their own stories are blocked or finished.
+- The owner approves the plan for any task in their story and is the first call for changes inside it.
+- A change that crosses stories, or alters the dependencies between them, goes to the technical PM.
+
+How tasks are run:
 
 - **Status is computed** from dependencies, not set by hand.
 - **Work is pulled** from the ready set: every unblocked, unclaimed task, the one that unblocks most first.
@@ -158,13 +206,13 @@ Date: <date>
 
 | Role | Does |
 | --- | --- |
-| Technical PM | Writes epics and stories, sets priorities with the client, runs release planning and review |
-| Client lead | Owns communication with the client, chases client decisions, sends release updates |
-| Developer | Approves task breakdowns and agent plans, reviews, merges, writes decision records |
+| Technical PM | Owns the plan above and below the line. Writes epics and stories, agrees priorities with the client, signs off criteria and estimates, sets out the tasks for each release, sets technical direction, runs the release review |
+| Story owner | A developer named on a story, or a whole epic, who holds its design. Approves plans for tasks in it and is the first call for changes inside it. Does not have to build all of it |
+| Developer | Reviews the stories before each release starts, claims ready tasks in any story, approves agent plans, reviews, merges, writes decision records that arise mid-task |
 | Coding agent | Investigates, drafts stories and tasks, implements, proves each criterion with real output |
 | Client | Follows stories in the tracker, makes the decisions each release needs, tests the outcome, accepts in writing |
 
-One person can hold more than one role.
+On larger projects the client-facing half (stories, priorities, chasing client decisions, the release review) may be handed to a client lead. Criteria, estimates and tasks stay with the technical PM.
 
 ## In any tracker
 
