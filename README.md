@@ -86,38 +86,14 @@ Dates are targets. A date moves by agreement when the calendar is the problem: a
 
 A story states the outcome first and says nothing about files or implementation.
 
-```markdown
-<Outcome in plain words>
-
-<Who gets what, and why it matters. One or two sentences.>
-
-## Requirements
-
-| Need | Detail |
-| ---- | ------ |
-
-## Not included
-
-- <Item, and the release where it arrives if known>
-
-## Acceptance criteria
-
-- <One checkable outcome, and how it is proved>
-
-## Depends on
-
-<Stories that must land first>
-
-## Blocked on
-
-<Who supplies what, in which format, by when>
-```
+Use the [story template](templates/story.md). See a [worked example](examples/story.md).
 
 Leave out any empty section except acceptance criteria. Epic, release, priority, estimate (in days) and assignee are fields in the tracker, not text in the body.
 
 Acceptance criteria:
 
 - Each is one observable outcome that a person or a command can check.
+- They are numbered so tasks can cite them.
 - Each says how it is proved: a Given/When/Then scenario, or a one-line criterion tagged with its method (`api`, `db`, `browser`, `cli`). Pick one style per project.
 - A criterion that forbids something is paired with one showing the allowed path still works.
 - A figure the client must decide is marked as theirs and listed among the release's client decisions.
@@ -139,7 +115,7 @@ Split on one axis, then look again. A spike produces a decision and its evidence
 
 ## Tasks
 
-Tasks hold the technical detail. A task is a working note for the team, not a contract: it adds only what the story leaves out. Outcome, scope, priority and release are inherited from the story.
+Tasks hold the technical detail. A task is a working note for the team, not a contract: it adds only what the story leaves out. Outcome, scope, priority and release are inherited from the story, and so are the acceptance criteria: a task points at the ones it proves.
 
 The technical PM sets out every task for a release before building begins:
 
@@ -149,24 +125,12 @@ The technical PM sets out every task for a release before building begins:
 
 Developers are free within a task and may add or split tasks inside a story. Anything that changes the approach or the dependencies comes back to the technical PM.
 
-```markdown
-<What changes, in one sentence>
-
-Story: <link>
-Depends on: <tasks, or a client decision>
-
-## Notes
-
-- <Pattern to follow, what to check first, exact names and counts>
-
-## Done when
-
-- <Only what the story's criteria do not already prove>
-```
+Use the [task template](templates/task.md). See a [worked example](examples/task.md).
 
 - The title names the change, not the user outcome.
 - File and function names are fine here; a task is short-lived.
-- "Done when" is usually empty. A task is done when it is merged and its share of the story's criteria is proven. Add a line only for a technical condition the client never sees.
+- "Proves" names the story's criteria this task answers for, by number. A task has no acceptance criteria of its own. Every story criterion must be claimed by at least one task; one that nobody claims is a gap found at planning.
+- "Done when" is usually empty. It holds only technical conditions the client would not recognise as something they asked for. Everything else is a story criterion, cited under Proves.
 - Upkeep with no story, such as dependency upgrades or pipeline fixes, sits as tasks under a standing maintenance epic.
 
 ## Dependencies and the ready set
