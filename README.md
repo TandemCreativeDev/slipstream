@@ -2,7 +2,7 @@
 
 How Tandem plans and delivers projects.
 
-A project is cut into releases. Each release gives the client one outcome they can test themselves. Stories are written for the whole project up front; technical tasks are written only for the release about to start. Dates hold and scope flexes. There are no sprints, stand-ups, story points or velocity.
+A project is cut into releases. Each release gives the client one outcome they can test themselves. Stories are written for the whole project up front; technical tasks are written only for the release about to start. What the contract promises and the budget both hold; how far each outcome is taken is what flexes. There are no sprints, stand-ups, story points or velocity.
 
 The name is from cycling: each accepted release clears the air for the next, and detailed planning rides just behind what has shipped.
 
@@ -11,7 +11,7 @@ The name is from cycling: each accepted release clears the air for the next, and
 1. **Outcomes before tasks.** A release is defined by something the client can test, not by a list of work.
 2. **Plain language above the line, technical detail below it.** The client reads stories. The team and its coding agents work in tasks.
 3. **Outline far ahead, detail close up.** Stories for the project; tasks for the next release only.
-4. **Dates hold; scope flexes.** Priorities decide what gives way.
+4. **Outcomes and budget hold; depth flexes.** What the contract promises is delivered within the days agreed. How far each outcome is taken is what gives way. Dates are targets.
 5. **Acceptance criteria are the contract.** What is in them is required and proven. What is not in them is not required.
 6. **People steer; agents investigate and build.** Agents draft plans, break stories into tasks and write code. People set priorities, approve plans and merge.
 7. **Decisions are written down once.** A material, non-obvious decision gets a decision record.
@@ -21,13 +21,19 @@ The name is from cycling: each accepted release clears the air for the next, and
 | Level | What it is | Read by | Written when | Size |
 | --- | --- | --- | --- | --- |
 | Epic | Something a person does, in plain words | Client and team | Project start | Spans releases |
-| Release | A slice across the epics with one testable outcome and a date | Client and team | Project start; re-planned after each review | Two to six weeks |
+| Release | A slice across the epics with one testable outcome, a budget in days and a target date | Client and team | At contract; re-planned after each review | Two to six weeks |
 | Story | One thing a user can do, with acceptance criteria | Client and team | Project start, for every release | Half a day to two days |
 | Task | A technical step towards a story | Team and agents | Release start, for that release only, by the technical PM | Up to a day |
 
 Epics run across; releases cut down through them. A story belongs to one epic and one release. The first release is thin and end to end: it touches most epics lightly so the whole thing works before any part is deep.
 
 A small story needs no tasks.
+
+### Commitments
+
+The contract does not list stories. It promises outcomes, and it sets the releases with their budgets. Each promised outcome is a commitment.
+
+Commitments are not a level in the table above. They cut across it: one commitment is usually met by several stories, sometimes in more than one epic or release. Every commitment traces to at least one Must story, and that link is checked when each release is planned.
 
 ## The release loop
 
@@ -43,16 +49,38 @@ The release review is the only fixed meeting.
 
 ## Priorities
 
-Every story has a MoSCoW priority, set per release.
+Every story has a MoSCoW priority, agreed with the client before its release starts.
 
-| Priority | Meaning | Guide |
-| --- | --- | --- |
-| Must | The release outcome fails without it | At most about 60% of the release's days |
-| Should | Painful to leave out, but the outcome survives | |
-| Could | Wanted if time allows; first to go | About 20% of the release's days |
-| Won't this time | Agreed as out of this release | |
+| Priority | Meaning |
+| --- | --- |
+| Must | Needed to meet a commitment at its simplest. Committed |
+| Should | Depth on a commitment. Painful to leave out, but the promise is still kept |
+| Could | Depth that is wanted if the days allow. First to go |
+| Won't this time | Agreed as out of this release |
 
-When a release is at risk, Could-haves move to a later release first, then Should-haves, by agreement with the client. The date moves only if a Must cannot be met.
+### Core and depth
+
+A story that bundles a promise with its refinements cannot be prioritised: all of it becomes a Must. So stories are cut in two kinds.
+
+- **Core:** the commitment at its simplest. A Must.
+- **Depth:** everything that takes it further. Separate Should or Could stories.
+
+A story's "Not included" list is the first place to look for depth stories. Cut this way, every release holds something that can be removed without breaking the contract. A release that is all Musts has nothing to give.
+
+### What gives way, in order
+
+A release has a budget in days. The budget is what a release is measured against, not its date: a release estimated at 20 days is on track while it has used 20 days or fewer, whenever it lands.
+
+When a release is forecast to exceed its days:
+
+1. Could-haves are removed.
+2. Should-haves are removed.
+3. Contingency is drawn, on notice to the client. Contingency is a separate allowance of days in the contract, outside every release's budget.
+4. The fee is raised, only by written agreement.
+
+Removed means removed. A removed story may return in a later release or a later contract, but that is never assumed.
+
+Dates are targets. A date moves by agreement when the calendar is the problem: a client decision arrives late, or people are unavailable. Moving a date does not create days, so it never fixes an overrun in effort. Where a client does have a date that matters more than the budget, say so in the contract and plan that release against the date.
 
 ## Stories
 
