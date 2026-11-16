@@ -167,28 +167,7 @@ A decision that is material and not obvious from the code gets an Architecture D
 
 Write one when a choice is costly to reverse, when a reasonable person would have chosen differently, or when the client's decision shapes the design. Do not write one for anything a reader can see by reading the code.
 
-```markdown
-# ADR-<number>: <Decision in plain words>
-
-Status: Proposed | Accepted | Superseded by ADR-<number>
-Date: <date>
-
-## Context
-
-<The situation and the constraint that forced a choice.>
-
-## Decision
-
-<What was chosen.>
-
-## Alternatives
-
-<What else was considered, and why not.>
-
-## Consequences
-
-<What this makes easier, harder or impossible.>
-```
+Use the [ADR template](templates/adr.md). See a [worked example](examples/adr.md).
 
 - A record is never edited after it is accepted. A change of mind is a new record that supersedes the old one.
 - A story or task shaped by a decision points to its record instead of restating it.
