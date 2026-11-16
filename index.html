@@ -191,7 +191,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 <header class="block">
   <span class="eyebrow">How Tandem plans and delivers projects</span>
   <h1>Slipstream</h1>
-  <p class="lede">A project is cut into releases. Each release gives the client one outcome they can test themselves. Dates hold and scope flexes.</p>
+  <p class="lede">A project is cut into releases. Each release gives the client one outcome they can test themselves. What was promised and the budget hold; how far each outcome is taken is what flexes.</p>
   <nav class="toc" aria-label="Sections">
     <a href="#shape">The shape</a>
     <a href="#release">One release</a>
@@ -267,7 +267,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
     <div class="fig">
       <svg viewBox="0 0 960 340" role="img" aria-label="Five stacked levels. Epic, release and story sit above a dashed line and are read by the client. Task and code sit below the line and are worked by the team and agents.">
         <rect class="bx-c" x="310" y="10" width="240" height="54" rx="8"/><text x="430" y="33" text-anchor="middle" class="b">Epic</text><text x="430" y="51" text-anchor="middle" class="s m">something a person does</text>
-        <rect class="bx-c" x="270" y="72" width="320" height="54" rx="8"/><text x="430" y="95" text-anchor="middle" class="b">Release</text><text x="430" y="113" text-anchor="middle" class="s m">a slice with one testable outcome and a date</text>
+        <rect class="bx-c" x="270" y="72" width="320" height="54" rx="8"/><text x="430" y="95" text-anchor="middle" class="b">Release</text><text x="430" y="113" text-anchor="middle" class="s m">one testable outcome, a budget, a target date</text>
         <rect class="bx-c" x="230" y="134" width="400" height="54" rx="8"/><text x="430" y="157" text-anchor="middle" class="b">Story</text><text x="430" y="175" text-anchor="middle" class="s m">one thing a user can do, with acceptance criteria</text>
         <path class="ln-d" d="M120 200H940"/>
         <text x="0" y="194" class="k">above the line</text><text x="0" y="214" class="k">below the line</text>
@@ -346,31 +346,55 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
   </figure>
 
   <div class="block">
-    <h3>Dates hold. Scope flexes.</h3>
-    <p>Every story has a priority for its release: Must, Should, Could, or Won't this time. Could-haves are the release's contingency. When something overruns, they move to a later release first, then Should-haves, by agreement with the client.</p>
+    <h3>Outcomes and budget hold. Depth flexes.</h3>
+    <p>The contract does not list stories. It promises outcomes, called commitments here, and gives each release a budget in days. A story that bundles a promise with its refinements cannot be prioritised, so stories are cut in two kinds: the core, which is the commitment at its simplest and always a Must, and the depth, which is separate Should or Could stories.</p>
   </div>
   <figure>
     <div class="fig">
-      <svg viewBox="0 0 960 250" role="img" aria-label="Two bars measured against a fixed release date. As planned, Must takes about 60 percent of the days, Should 20 and Could 20. After an overrun, Must has grown, Should still fits, and Could has moved past the date into the next release.">
-        <path class="ln-h" d="M770 30V214"/>
-        <text x="770" y="20" text-anchor="middle" class="b th">Release date holds</text>
-        <path class="ln" d="M170 214H930"/>
-        <text x="170" y="234" text-anchor="middle" class="s m">release starts</text><text x="770" y="234" text-anchor="middle" class="s m">release date</text><text x="860" y="234" text-anchor="middle" class="s m">next release</text>
-
-        <text x="0" y="80" class="b">As planned</text>
-        <rect class="bx-h" x="170" y="54" width="360" height="44" rx="6"/><text x="350" y="81" text-anchor="middle" class="b">Must · at most about 60%</text>
-        <rect class="bx-c" x="530" y="54" width="120" height="44" rx="6"/><text x="590" y="81" text-anchor="middle" class="b">Should</text>
-        <rect class="bx" x="650" y="54" width="120" height="44" rx="6"/><text x="710" y="81" text-anchor="middle" class="b">Could · 20%</text>
-
-        <text x="0" y="158" class="b">After an overrun</text>
-        <rect class="bx-h" x="170" y="132" width="450" height="44" rx="6"/><rect class="hatch" x="530" y="132" width="90" height="44" rx="6"/>
-        <text x="350" y="159" text-anchor="middle" class="b">Must</text><text x="575" y="159" text-anchor="middle" class="s b">overrun</text>
-        <rect class="bx-c" x="620" y="132" width="120" height="44" rx="6"/><text x="680" y="159" text-anchor="middle" class="b">Should</text>
-        <rect class="ghost" x="800" y="132" width="120" height="44" rx="6"/><text x="860" y="159" text-anchor="middle" class="b m">Could</text>
-        <text x="860" y="196" text-anchor="middle" class="s m">moved, by agreement</text>
+      <svg viewBox="0 0 960 190" role="img" aria-label="One commitment from the contract is met by three stories. The Must story is the promise at its simplest and holds. The Should and Could stories are depth and can be removed.">
+        <text x="0" y="52" class="k">Commitment, from the contract</text>
+        <rect class="bx" x="0" y="62" width="250" height="66" rx="8"/><text x="125" y="91" text-anchor="middle" class="b">Guests can cancel a booking</text><text x="125" y="110" text-anchor="middle" class="s m">promised, so it holds</text>
+        <path class="ln" d="M250 95L328 35"/><path class="ln" d="M250 95H328"/><path class="ln" d="M250 95L328 155"/>
+        <rect class="bx-h" x="330" y="10" width="630" height="50" rx="8"/><text x="346" y="40" class="b th">Must</text><text x="420" y="40" class="b">Cancel a booking and see the refund</text><text x="944" y="40" text-anchor="end" class="s m">core: the promise at its simplest</text>
+        <rect class="bx-c" x="330" y="70" width="630" height="50" rx="8"/><text x="346" y="100" class="b tc">Should</text><text x="420" y="100" class="b">Email confirming the cancellation</text><text x="944" y="100" text-anchor="end" class="s m">depth: removed second</text>
+        <rect class="ghost" x="330" y="130" width="630" height="50" rx="8"/><text x="346" y="160" class="b m">Could</text><text x="420" y="160" class="b">Choose a reason for cancelling</text><text x="944" y="160" text-anchor="end" class="s m">depth: removed first</text>
       </svg>
     </div>
-    <figcaption>If every story in a release is a Must, there is nothing to give way and the date moves instead. The date moves only when a Must cannot be met.</figcaption>
+    <figcaption>Every commitment traces to at least one Must story. A story's "Not included" list is the first place to look for depth stories.</figcaption>
+  </figure>
+  <div class="block">
+    <p>A release is measured against its days, not its date. When it is forecast to exceed them, depth is removed first, then the contract's contingency is drawn. Removed means removed: a story may return later, but that is never assumed.</p>
+  </div>
+  <figure>
+    <div class="fig">
+      <svg viewBox="0 0 960 300" role="img" aria-label="Three bars measured in days against a fixed release budget, with a separate block of contingency beyond it. As planned, Must, Should and Could fill the budget. When a Must overruns, the Could-haves are removed. When it overruns again, the Should-haves are removed and then contingency is drawn.">
+        <path class="ln-h" d="M770 30V266"/>
+        <text x="770" y="20" text-anchor="middle" class="b th">Release budget holds</text>
+        <path class="ln" d="M170 266H930"/>
+        <text x="170" y="286" text-anchor="middle" class="s m">0 days</text><text x="770" y="286" text-anchor="middle" class="s m">the release's days</text><text x="850" y="286" text-anchor="middle" class="s m">contingency</text>
+
+        <text x="0" y="78" class="b">As planned</text>
+        <rect class="bx-h" x="170" y="54" width="360" height="40" rx="6"/><text x="350" y="79" text-anchor="middle" class="b">Must</text>
+        <rect class="bx-c" x="530" y="54" width="120" height="40" rx="6"/><text x="590" y="79" text-anchor="middle" class="b">Should</text>
+        <rect class="bx" x="650" y="54" width="120" height="40" rx="6"/><text x="710" y="79" text-anchor="middle" class="b">Could</text>
+        <rect class="ghost" x="790" y="54" width="120" height="40" rx="6"/><text x="850" y="79" text-anchor="middle" class="s m">untouched</text>
+        <text x="170" y="110" class="s m">Musts meet what the contract promises. Shoulds and Coulds are depth.</text>
+
+        <text x="0" y="148" class="b">A Must overruns</text>
+        <rect class="bx-h" x="170" y="124" width="480" height="40" rx="6"/><rect class="hatch" x="530" y="124" width="120" height="40" rx="6"/>
+        <text x="350" y="149" text-anchor="middle" class="b">Must</text><text x="590" y="149" text-anchor="middle" class="s b">overrun</text>
+        <rect class="bx-c" x="650" y="124" width="120" height="40" rx="6"/><text x="710" y="149" text-anchor="middle" class="b">Should</text>
+        <rect class="ghost" x="790" y="124" width="120" height="40" rx="6"/><text x="850" y="149" text-anchor="middle" class="s m">untouched</text>
+        <text x="170" y="180" class="s m">Could-haves removed.</text>
+
+        <text x="0" y="218" class="b">It overruns again</text>
+        <rect class="bx-h" x="170" y="194" width="600" height="40" rx="6"/><rect class="hatch" x="530" y="194" width="240" height="40" rx="6"/>
+        <text x="350" y="219" text-anchor="middle" class="b">Must</text><text x="650" y="219" text-anchor="middle" class="s b">overrun</text>
+        <rect class="bx-h" x="790" y="194" width="120" height="40" rx="6"/><text x="850" y="219" text-anchor="middle" class="s b">drawn</text>
+        <text x="170" y="250" class="s m">Should-haves removed, then contingency drawn, on notice to the client.</text>
+      </svg>
+    </div>
+    <figcaption>The bars are days of work, not dates. Past contingency, the fee rises only by written agreement. A date is a target: it moves by agreement when the calendar is the problem, and moving it never pays for an overrun.</figcaption>
   </figure>
 
   <div class="block">
@@ -380,7 +404,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
   <div class="anatomy">
     <article class="story" aria-label="Example story">
       <h4>Guests can cancel a booking</h4>
-      <div class="fields" aria-label="Fields held by the tracker"><span>Epic: Manage</span><span>Release 2</span><span>Should</span><span>1.5 days</span></div>
+      <div class="fields" aria-label="Fields held by the tracker"><span>Epic: Manage</span><span>Release 2</span><span>Must</span><span>1.5 days</span></div>
       <div class="part"><span class="num">1</span><div><p>A guest can cancel their own booking from their account and is told what they will be refunded, so nobody has to email support.</p></div></div>
       <div class="part"><span class="num">2</span><div><h5>Requirements</h5>
         <div class="tscroll"><table><thead><tr><th>Need</th><th>Detail</th></tr></thead><tbody>
@@ -388,7 +412,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
           <tr><td>Refund shown</td><td>Amount stated before the guest confirms</td></tr>
           <tr><td>Who can cancel</td><td>The guest who made the booking, and staff</td></tr>
         </tbody></table></div></div></div>
-      <div class="part"><span class="num">3</span><div><h5>Not included</h5><ul><li>Changing the dates of a booking (Release 3)</li><li>Partial refunds</li></ul></div></div>
+      <div class="part"><span class="num">3</span><div><h5>Not included</h5><ul><li>Email confirming the cancellation (its own Should story)</li><li>Choosing a reason for cancelling (its own Could story)</li><li>Changing the dates of a booking (Release 3)</li></ul></div></div>
       <div class="part"><span class="num">4</span><div><h5>Acceptance criteria</h5><ul>
         <li>A guest cancels their own booking and it shows as cancelled <span class="tag">browser</span></li>
         <li>A guest cannot cancel someone else's booking <span class="tag">api</span></li>
@@ -591,7 +615,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
       <li><b>Outcomes before tasks</b>A release is defined by something the client can test, not by a list of work.</li>
       <li><b>Plain language above the line</b>The client reads stories. The team and its agents work in tasks.</li>
       <li><b>Outline far ahead, detail close up</b>Stories for the project; tasks for the next release only.</li>
-      <li><b>Dates hold; scope flexes</b>Priorities decide what gives way.</li>
+      <li><b>Outcomes and budget hold; depth flexes</b>What was promised is delivered within the days agreed. Dates are targets.</li>
       <li><b>Acceptance criteria are the contract</b>What is in them is required and proven.</li>
       <li><b>People steer; agents investigate and build</b>People set priorities, approve plans and merge.</li>
       <li><b>Decisions are written down once</b>Material, non-obvious choices get a decision record.</li>
