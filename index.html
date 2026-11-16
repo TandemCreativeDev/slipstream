@@ -135,7 +135,7 @@ svg .tt { fill: var(--team); }
 .part > div { min-width: 0; display: flex; flex-direction: column; gap: 6px; }
 .part h5 { margin: 0; font: 600 12px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
 .part p, .part li { font-size: 15px; }
-.part ul { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
+.part ul, .part ol { margin: 0; padding-left: 18px; display: flex; flex-direction: column; gap: 4px; }
 .tag { font-family: var(--mono); font-size: 11.5px; color: var(--team); background: var(--team-t); border-radius: 4px; padding: 1px 6px; white-space: nowrap; }
 .tscroll { overflow-x: auto; }
 table { border-collapse: collapse; width: 100%; font-size: 14.5px; }
@@ -413,12 +413,12 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
           <tr><td>Who can cancel</td><td>The guest who made the booking, and staff</td></tr>
         </tbody></table></div></div></div>
       <div class="part"><span class="num">3</span><div><h5>Not included</h5><ul><li>Email confirming the cancellation (its own Should story)</li><li>Choosing a reason for cancelling (its own Could story)</li><li>Changing the dates of a booking (Release 3)</li></ul></div></div>
-      <div class="part"><span class="num">4</span><div><h5>Acceptance criteria</h5><ul>
+      <div class="part"><span class="num">4</span><div><h5>Acceptance criteria</h5><ol>
         <li>A guest cancels their own booking and it shows as cancelled <span class="tag">browser</span></li>
         <li>A guest cannot cancel someone else's booking <span class="tag">api</span></li>
         <li>Staff can still cancel any booking <span class="tag">api</span></li>
         <li>The refund shown matches the amount refunded <span class="tag">db</span></li>
-      </ul></div></div>
+      </ol></div></div>
       <div class="part"><span class="num">5</span><div><h5>Depends on</h5><ul><li>Guests can sign in (Release 1)</li><li>Guests can make a booking (Release 1)</li></ul></div></div>
       <div class="part"><span class="num">6</span><div><h5>Blocked on</h5><p>The client confirms the refund window, in days, before the release starts.</p></div></div>
     </article>
@@ -427,7 +427,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <li><span class="num">1</span><span><b>Outcome first.</b> Who gets what and why, in one or two sentences.</span></li>
         <li><span class="num">2</span><span><b>Requirements as a table.</b> Needs and their detail, not prose.</span></li>
         <li><span class="num">3</span><span><b>Say what is left out,</b> and the release where it arrives if known.</span></li>
-        <li><span class="num">4</span><span><b>Each criterion is one checkable outcome</b> and says how it is proved. A criterion that forbids something is paired with one showing the allowed path still works.</span></li>
+        <li><span class="num">4</span><span><b>Each criterion is one checkable outcome</b> and says how it is proved. A criterion that forbids something is paired with one showing the allowed path still works. They are numbered so tasks can cite them.</span></li>
         <li><span class="num">5</span><span><b>Stories that must land first.</b> A rough link, used to order the work and place the story in a release. Once the release has tasks, the task links take over.</span></li>
         <li><span class="num">6</span><span><b>Anything the client must supply</b> is named: who, what, in which format, by when. It becomes a client decision in the task graph.</span></li>
       </ol>
@@ -479,29 +479,34 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 
   <div class="block">
     <h3>What a task looks like</h3>
-    <p>A task is a working note for the team, not a contract. It adds only what the story leaves out: the technical how. Outcome, scope, priority and release are inherited from the story.</p>
+    <p>A task is a working note for the team, not a contract. It adds only what the story leaves out: the technical how. Outcome, scope, priority and release are inherited from the story, and so are the acceptance criteria: a task points at the ones it proves.</p>
   </div>
   <div class="anatomy">
     <article class="story" aria-label="Example task">
-      <h4>Cancel endpoint</h4>
-      <div class="fields" aria-label="Link held by the tracker"><span>Story: Guests are refunded</span></div>
-      <div class="part"><span class="num">1</span><div><p>Send the refund to the guest's original payment method when a booking is cancelled.</p></div></div>
+      <h4>Refund payment</h4>
+      <div class="fields" aria-label="Link held by the tracker"><span>Story: Guests can cancel a booking</span></div>
+      <div class="part"><span class="num">1</span><div><p>Add the endpoint that cancels a booking and returns the refund amount.</p></div></div>
       <div class="part"><span class="num">2</span><div><h5>Depends on</h5><ul>
-        <li>Refund rule <span class="muted">(this story)</span></li>
-        <li>Cancel endpoint <span class="muted">(story: Guests can cancel a booking)</span></li>
+        <li>Bookings store <span class="muted">(this story)</span></li>
+        <li>Sign-in session <span class="muted">(story: Guests can sign in)</span></li>
       </ul></div></div>
-      <div class="part"><span class="num">3</span><div><h5>Notes</h5><ul>
-        <li>Follow the shape of the existing payment calls</li>
-        <li>Check production for bookings paid by voucher before building</li>
+      <div class="part"><span class="num">3</span><div><h5>Proves</h5><ul>
+        <li>Criterion 2 <span class="muted">A guest cannot cancel someone else's booking</span></li>
+        <li>Criterion 3 <span class="muted">Staff can still cancel any booking</span></li>
       </ul></div></div>
-      <div class="part"><span class="num">4</span><div><h5>Done when</h5><ul><li>A failed refund is retried and logged, never lost <span class="tag">api</span></li></ul></div></div>
+      <div class="part"><span class="num">4</span><div><h5>Notes</h5><ul>
+        <li>Follow the shape of the existing booking routes</li>
+        <li>Reuse the existing access roles: guest and staff</li>
+      </ul></div></div>
+      <div class="part"><span class="num">5</span><div><h5>Done when</h5><ul><li>The migration applies cleanly to a fresh database <span class="tag">cli</span></li></ul></div></div>
     </article>
     <div class="block">
       <ol class="notes">
         <li><span class="num">1</span><span><b>One sentence naming the change,</b> not the user outcome. The story already says why.</span></li>
         <li><span class="num">2</span><span><b>Depends on is what the graph is built from.</b> It names tasks, in this story or another, and client decisions. Record it as a dependency link where the tracker has one, so the ready set can be computed.</span></li>
-        <li><span class="num">3</span><span><b>Notes from the investigation:</b> the pattern to follow, what to check first, exact names and counts. File and function names are fine here; a task is short-lived.</span></li>
-        <li><span class="num">4</span><span><b>"Done when" is usually empty.</b> A task is done when it is merged and its share of the story's criteria is proven. Add a line only for a technical condition the client never sees.</span></li>
+        <li><span class="num">3</span><span><b>Proves names the story's criteria this task answers for,</b> by number. A task has no acceptance criteria of its own. Every story criterion must be claimed by at least one task; one that nobody claims is a gap found at planning.</span></li>
+        <li><span class="num">4</span><span><b>Notes from the investigation:</b> the pattern to follow, what to check first, exact names and counts. File and function names are fine here; a task is short-lived.</span></li>
+        <li><span class="num">5</span><span><b>"Done when" is usually empty.</b> It holds only technical conditions the client would not recognise as something they asked for. Everything else is a story criterion, cited under Proves.</span></li>
       </ol>
       <div class="never"><b>Work with no story</b><span>Upkeep such as dependency upgrades or pipeline fixes sits as tasks under a standing maintenance epic. No story is invented for it.</span></div>
     </div>
