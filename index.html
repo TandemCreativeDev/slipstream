@@ -539,7 +539,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <button type="button" class="btn" id="graphreset">Start again</button>
       </aside>
     </div>
-    <figcaption>Priya's own story is waiting on the client, so her ready set offers a task in Sam's story. Try it: select a ready task to claim it, and again to finish it. Select the client decision to settle it. Switch developer to see the order change.</figcaption>
+    <figcaption>Priya's own story is blocked, waiting on the client, so her ready set offers a task in Sam's story. Try it: select a ready task to claim it, and again to finish it. Select the client decision to settle it. Switch developer to see the order change.</figcaption>
   </figure>
 
   <div class="block">
@@ -741,9 +741,10 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
   function storyState(st) {
     var ss = nodes.filter(function (n) { return n.story === st.id && !n.gate; }).map(status);
     if (ss.every(function (s) { return s === 'done'; })) return 'done';
-    if (ss.some(function (s) { return s === 'ready' || s === 'claimed'; })) return 'in play';
-    if (ss.some(function (s) { return s === 'gated'; })) return 'waiting on the client';
-    return 'waiting on another story';
+    if (ss.some(function (s) { return s === 'claimed' || s === 'done'; })) return 'in progress';
+    if (ss.some(function (s) { return s === 'ready'; })) return 'ready';
+    if (ss.some(function (s) { return s === 'gated'; })) return 'blocked · waiting on the client';
+    return 'blocked';
   }
   function status(n) {
     if (state.done[n.id]) return 'done';

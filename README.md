@@ -140,7 +140,7 @@ There is one dependency graph per release. It is drawn between tasks and runs ac
 The graph is built from each task's "Depends on". Record it as a dependency link where the tracker has one, so the ready set can be computed instead of read off the ticket text.
 
 - **Nobody works out what to start.** The ready set is computed from the graph: every task with nothing in its way.
-- **A story's state is read off its tasks.** It is in play when one of its tasks is ready or claimed, waiting when none are, done when all are. It is never kept separately.
+- **A story's state is read off its tasks**, using the same words as a task. It is done when every task is done; in progress when any task is claimed or done and not all are; ready when none is claimed or done and at least one is ready; blocked otherwise. It is never kept separately.
 - **Stories carry rough links first.** Before a release has tasks, a story's "Depends on" orders the work and helps decide which release it lands in. Once the tasks exist, they are the source of truth and the story-level view is a roll-up of them.
 - **Each developer sees their own stories first.** A ready set lists ready tasks in the stories that developer owns, then everyone else's, each group ordered by how much it unblocks.
 
@@ -210,7 +210,7 @@ Words that are easy to confuse. Slipstream uses each in this sense only.
 | Term | Kind | Meaning |
 | --- | --- | --- |
 | Dependency | Link | "B depends on A" means B cannot start until A is done. A may be a task or an input |
-| Blocked | Status | Computed. A task is blocked while any of its dependencies is open. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
+| Blocked | Status | Computed. A task is blocked while any of its dependencies is open. A story is blocked when none of its tasks is started or ready. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
 | Blocker | Derived label | An open item that is stopping a task which would otherwise be ready. Never an item type, and not a priority as in Jira |
 | Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner outside the team: the client or a third party. Never claimed or pulled |
 | Release acceptance | Event | The client's written sign-off at the release review. The only point where the client approves the release as a whole |
