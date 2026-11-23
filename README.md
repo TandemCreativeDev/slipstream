@@ -202,3 +202,15 @@ Slipstream is defined by its concepts, not a tool.
 | Input | Linked issue, labelled with its type | Issue labelled with its type | Item in an inputs group |
 
 Each level has one source of truth. Stories live in the tracker the client reads. Tasks live either there or in the repository, with the other as a mirror. Decision records always live in the repository.
+
+## Terms
+
+Words that are easy to confuse. Slipstream uses each in this sense only.
+
+| Term | Kind | Meaning |
+| --- | --- | --- |
+| Dependency | Link | "B depends on A" means B cannot start until A is done. A may be a task or an input |
+| Blocked | Status | Computed. A task is blocked while any of its dependencies is open. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
+| Blocker | Derived label | An open item that is stopping a task which would otherwise be ready. Never an item type, and not a priority as in Jira |
+| Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner. Never claimed or pulled |
+| Release acceptance | Event | The client's written sign-off at the release review. The only point where the client approves the release as a whole |
