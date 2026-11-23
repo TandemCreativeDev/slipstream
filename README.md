@@ -158,7 +158,7 @@ How tasks are run:
 - **Status is computed** from dependencies, not set by hand.
 - **Work is pulled** from the ready set: every unblocked, unclaimed task, the one that unblocks most first.
 - **Starting is a claim** by a named person. Nobody is given a start they did not make.
-- **Anything the work needs but nobody builds is an input**: a decision, an approval, information or a deliverable. It has an owner, usually the client, sometimes a third party or a developer, and its owner closes it. It sits in the graph alongside the tasks it holds up, and is never in the ready set.
+- **Anything the work needs but nobody builds is an input**: a decision, an approval, information or a deliverable. It is owned by the client or a third party, never by the team, and its owner closes it. It sits in the graph alongside the tasks it holds up, and is never in the ready set. A decision the team must make is a task, not an input.
 - **Done is confirmed by a person.** An agent may propose it, with evidence.
 
 ## Decision records
@@ -212,5 +212,5 @@ Words that are easy to confuse. Slipstream uses each in this sense only.
 | Dependency | Link | "B depends on A" means B cannot start until A is done. A may be a task or an input |
 | Blocked | Status | Computed. A task is blocked while any of its dependencies is open. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
 | Blocker | Derived label | An open item that is stopping a task which would otherwise be ready. Never an item type, and not a priority as in Jira |
-| Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner. Never claimed or pulled |
+| Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner outside the team: the client or a third party. Never claimed or pulled |
 | Release acceptance | Event | The client's written sign-off at the release review. The only point where the client approves the release as a whole |
