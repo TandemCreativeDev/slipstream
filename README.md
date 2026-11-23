@@ -23,7 +23,7 @@ The name is from cycling: each accepted release clears the air for the next, and
 | Epic | Something a person does, in plain words | Client and team | Project start | Spans releases |
 | Release | A slice across the epics with one testable outcome, a budget in days and a target date | Client and team | At contract; re-planned after each review | Two to six weeks |
 | Story | One thing a user can do, with acceptance criteria | Client and team | Project start, for every release | Half a day to two days |
-| Task | A technical step towards a story | Team and agents | Release start, for that release only, by the technical PM | Up to a day |
+| Task | A technical step towards a story | Team and agents | Release start, for that release only, by the technical PM | Up to a day, about one pull request |
 
 Epics run across; releases cut down through them. A story belongs to one epic and one release. The first release is thin and end to end: it touches most epics lightly so the whole thing works before any part is deep.
 
@@ -207,10 +207,18 @@ Each level has one source of truth. Stories live in the tracker the client reads
 
 Words that are easy to confuse. Slipstream uses each in this sense only.
 
+Slipstream uses an industry-standard term only where it means what the industry means. Where its meaning differs, it says so here, or uses its own word.
+
 | Term | Kind | Meaning |
 | --- | --- | --- |
 | Dependency | Link | "B depends on A" means B cannot start until A is done. A may be a task or an input |
 | Blocked | Status | Computed. A task is blocked while any of its dependencies is open. A story is blocked when none of its tasks is started or ready. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
 | Blocker | Derived label | An open item that is stopping a task which would otherwise be ready. Never an item type, and not a priority as in Jira |
 | Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner outside the team: the client or a third party. Never claimed or pulled |
+| Ready | Status | Computed. A task with nothing in its way that nobody has claimed. A story is ready when none of its tasks is started and at least one is ready. Not Scrum's "Definition of Ready", and Slipstream never uses that phrase |
+| Release | Level | A slice of work with one outcome the client tests and accepts, a budget in days and a target date. Not necessarily a deployment, as it is for most teams |
+| Must, Should, Could, Won't this time | Priority | MoSCoW, but narrower than DSDM's: Should and Could are depth on a commitment, not "important but not vital" and "nice to have" |
+| Epic | Level | Something a person does, spanning releases. Closer to an activity on a story map than to "a large body of work" |
+| Task | Item | A technical step inside one story, about one pull request's worth of work. A Jira sub-task, not a Jira Task |
+| Story owner | Role | The one developer who holds a story's design and approves its tasks. Anyone may claim a ready task in any story; owning is not doing |
 | Release acceptance | Event | The client's written sign-off at the release review. The only point where the client approves the release as a whole |
