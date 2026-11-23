@@ -514,11 +514,11 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 
   <div class="block">
     <h3>Work is pulled, not assigned</h3>
-    <p>There is one dependency graph per release, drawn between tasks and running across stories. A task may wait on a task in another story, or on a client decision. Status is worked out from those links and never set by hand, so nobody has to work out what they can start: the ready set is every task with nothing in its way.</p>
+    <p>There is one dependency graph per release, drawn between tasks and running across stories. A task may wait on a task in another story, or on an input such as a client decision. Status is worked out from those links and never set by hand, so nobody has to work out what they can start: the ready set is every task with nothing in its way.</p>
     <p>A story's own state is read off its tasks, not kept separately. Before a release has tasks, stories carry rough "depends on" links to order the work; once the tasks exist, they are the source of truth.</p>
     <p>Each story has an owner: the developer who holds its design. Owning a story is not doing all of it. Anyone may claim a ready task in any story, and the owner approves the plan. A developer's ready set lists their own stories first, then everyone else's.</p>
     <div class="key">
-      <span><i class="k-hot"></i>ready</span><span><i class="k-team"></i>in progress (claimed)</span><span><i class="k-done"></i>done</span><span><i class="k-blocked"></i>blocked</span><span><i class="k-gate"></i>waiting on a client decision</span>
+      <span><i class="k-hot"></i>ready</span><span><i class="k-team"></i>in progress (claimed)</span><span><i class="k-done"></i>done</span><span><i class="k-blocked"></i>blocked</span><span><i class="k-gate"></i>waiting on an input</span>
     </div>
   </div>
   <figure>
@@ -654,7 +654,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <tr><td>Estimate, in days</td><td>Original estimate</td><td>Project number field</td><td>Numbers column</td></tr>
         <tr><td>Dependency</td><td>"Blocks" link</td><td>"Blocked by" relation</td><td>Dependency column</td></tr>
         <tr><td>Claim</td><td>Assignee and In Progress</td><td>Assignee</td><td>Person column</td></tr>
-        <tr><td>Client decision</td><td>Linked issue on the client</td><td>Labelled issue</td><td>Item in a client group</td></tr>
+        <tr><td>Input</td><td>Linked issue, labelled with its type</td><td>Issue labelled with its type</td><td>Item in an inputs group</td></tr>
       </tbody>
     </table></div>
   </div>
