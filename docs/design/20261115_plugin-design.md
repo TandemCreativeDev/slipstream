@@ -59,7 +59,7 @@ Rules it enforces:
 
 - Status is computed from links and is never set by hand.
 - A claim always names a person; a name is never inferred.
-- A client decision blocks until the technical PM settles it.
+- An input blocks until its owner closes it.
 - Finishing a task is confirmed by a person.
 
 There is one implementation of these rules. Anything else that shows task status, such as a personal dashboard, reads this package's output instead of working status out again. Two programs computing status separately would disagree in edge cases.
@@ -93,7 +93,7 @@ Each adapter declares what its tracker supports. Where a tracker has no real dep
 | Priority | Label or field | Project field | Frontmatter field |
 | Owner | Custom field | Project field | Frontmatter field |
 | Claim | Assignee and status | Assignee | Frontmatter fields |
-| Client decision | Linked issue | Labelled issue | One file |
+| Input | Linked issue, labelled with its type | Issue labelled with its type | One file |
 
 A project names its adapter, and how its fields are named, in one configuration file in the repository. Adding a tracker means writing one adapter.
 
@@ -117,8 +117,8 @@ tickets/
       story.md
       <task>.md
       <task>.md
-  decisions/
-    <client decision>.md
+  inputs/
+    <input>.md
   archive/
     <release>/
       <epic>/
@@ -217,7 +217,7 @@ The technical PM draws the graph. Developers adjust it inside a story. Changes t
 | Change a story's criteria, priority or release | Yes | No |
 | Create the task graph for a release | Yes | No |
 | Name or change a story's owner | Yes | No |
-| Add or settle a client decision | Yes | No |
+| Add an input, or close one for its owner | Yes | No |
 | Add a task inside a story | Yes | Yes |
 | Split a task | Yes | Yes |
 | Add or remove a link between tasks in one story | Yes | Yes, story owner |
@@ -237,7 +237,7 @@ Skills are thin. Each calls the package and applies judgement to what comes back
 | `map` | Contract documents and scope | Epics, releases with outcomes and dates, and every story with an estimate and a first priority, shown for approval and then written to the tracker |
 | `story` | An idea, or an existing story | One story in the standard format: outcome, requirements table, not included, acceptance criteria, depends on, blocked on |
 | `split` | A story over two days or hiding an unknown | Two or more stories, split on one axis, with the reason |
-| `plan-release` | A release whose stories are signed off | Tasks, links across stories, client decisions and owners, drafted from the code as it is, corrected by the technical PM, then written |
+| `plan-release` | A release whose stories are signed off | Tasks, links across stories, inputs and owners, drafted from the code as it is, corrected by the technical PM, then written |
 | `review-release` | A release ready for the client | The outcome and each story's criteria laid out as a test script for the client, then a record of the result |
 | `replan` | What the client found | Proposed changes to later stories and releases, for approval |
 

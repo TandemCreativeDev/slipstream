@@ -2,7 +2,7 @@
 
 ## Depends on
 
-- <Tasks, or a client decision>
+- <Tasks, or an input>
 
 ## Proves
 

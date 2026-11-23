@@ -80,7 +80,7 @@ When a release is forecast to exceed its days:
 
 Removed means removed. A removed story may return in a later release or a later contract, but that is never assumed.
 
-Dates are targets. A date moves by agreement when the calendar is the problem: a client decision arrives late, or people are unavailable. Moving a date does not create days, so it never fixes an overrun in effort. Where a client does have a date that matters more than the budget, say so in the contract and plan that release against the date.
+Dates are targets. A date moves by agreement when the calendar is the problem: an input from the client arrives late, or people are unavailable. Moving a date does not create days, so it never fixes an overrun in effort. Where a client does have a date that matters more than the budget, say so in the contract and plan that release against the date.
 
 ## Stories
 
@@ -96,7 +96,7 @@ Acceptance criteria:
 - They are numbered so tasks can cite them.
 - Each says how it is proved: a Given/When/Then scenario, or a one-line criterion tagged with its method (`api`, `db`, `browser`, `cli`). Pick one style per project.
 - A criterion that forbids something is paired with one showing the allowed path still works.
-- A figure the client must decide is marked as theirs and listed among the release's client decisions.
+- A figure the client must decide is marked as theirs and listed among the release's inputs.
 - Constraints are stated in words ("reuses the existing access roles").
 
 ## Splitting stories
@@ -183,7 +183,7 @@ Use the [ADR template](templates/adr.md). See a [worked example](examples/adr.md
 | Coding agent | Investigates, drafts stories and tasks, implements, proves each criterion with real output |
 | Client | Follows stories in the tracker, makes the decisions each release needs, tests the outcome, accepts in writing |
 
-On larger projects the client-facing half (stories, priorities, chasing client decisions, the release review) may be handed to a client lead. Criteria, estimates and tasks stay with the technical PM.
+On larger projects the client-facing half (stories, priorities, chasing inputs, the release review) may be handed to a client lead. Criteria, estimates and tasks stay with the technical PM.
 
 ## In any tracker
 
