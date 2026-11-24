@@ -1,6 +1,6 @@
 # Guests can cancel a booking
 
-Epic: Manage · Release 2 · Must · 1.5 days
+Epic: Manage · Release 2 · Must · 1.5 days · Assignee: Sam
 
 A guest can cancel their own booking from their account and is told what they will be refunded, so nobody has to email support.
 
@@ -29,6 +29,7 @@ A guest can cancel their own booking from their account and is told what they wi
 
 - Guests can sign in (Release 1)
 - Guests can make a booking (Release 1)
+- Refund window (input: the client)
 
 ## Blocked on
 

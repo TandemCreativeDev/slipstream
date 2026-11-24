@@ -107,7 +107,6 @@ svg .tt { fill: var(--team); }
 .seg button:hover, .pick button:hover, .btn:hover { border-color: var(--ink); }
 .seg button[aria-pressed="true"], .pick button[aria-pressed="true"] { background: var(--ink); color: var(--bg); border-color: var(--ink); }
 .ready .lbl { font: 500 11px var(--mono); letter-spacing: .07em; text-transform: uppercase; color: var(--muted); }
-#graph .lane { fill: var(--wash); opacity: .55; }
 #horizon .frame, #horizon .s-past, #horizon .s-now, #horizon .s-future, #horizon .tghost { display: none; }
 #horizon .now .frame, #horizon .past .s-past, #horizon .now .s-now, #horizon .future .s-future, #horizon .future .tghost { display: block; }
 #horizon .future .chips { display: none; }
@@ -155,7 +154,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 .sp svg { width: 100%; height: auto; margin-top: auto; }
 .first { fill: var(--hot-t); stroke: var(--hot); stroke-width: 1.5; }
 
-/* Task graph */
+/* Story graph */
 .graphwrap { display: grid; grid-template-columns: minmax(0, 1fr) 250px; gap: 20px; align-items: start; }
 @media (max-width: 900px) { .graphwrap { grid-template-columns: minmax(0, 1fr); } }
 .ready { background: var(--surface); border: 1px solid var(--wash); border-radius: 10px; padding: 16px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
@@ -168,15 +167,23 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 #graph .node rect { stroke-width: 1.5; }
 #graph .st-done rect { fill: var(--done-t); stroke: var(--done); }
 #graph .st-ready rect { fill: var(--hot-t); stroke: var(--hot); stroke-width: 2.25; }
-#graph .st-claimed rect { fill: var(--team-t); stroke: var(--team); stroke-width: 2.25; }
+#graph .st-doing rect { fill: var(--team-t); stroke: var(--team); stroke-width: 2.25; }
 #graph .st-blocked rect { fill: var(--wash); stroke: var(--line); stroke-dasharray: 4 4; }
 #graph .st-gate rect { fill: var(--gate-t); stroke: var(--gate); stroke-dasharray: 6 4; }
 #graph .st-ready .stt { fill: var(--hot); }
-#graph .st-claimed .stt { fill: var(--team); }
+#graph .st-doing .stt { fill: var(--team); }
 #graph .st-done .stt { fill: var(--done); }
 #graph .st-gate .stt { fill: var(--gate); }
 #graph .edge { fill: none; stroke: var(--line); stroke-width: 1.5; stroke-dasharray: 4 4; }
 #graph .edge.met { stroke: var(--done); stroke-dasharray: none; }
+#graph .tk rect { fill: var(--surface); stroke: var(--arrow); stroke-width: 1.25; stroke-dasharray: none; }
+#graph .tk text { font: 500 10.5px var(--mono); fill: var(--muted); }
+#graph .tk.doing rect { fill: var(--team); stroke: var(--team); }
+#graph .tk.doing text { fill: var(--surface); }
+#graph .tk.done rect { fill: var(--done); stroke: var(--done); }
+#graph .tk.done text { fill: var(--surface); }
+#graph .tk.act { cursor: pointer; }
+#graph .tk:focus-visible rect { stroke: var(--ink); stroke-width: 2.5; }
 #graph .node:focus-visible rect { stroke: var(--ink); stroke-width: 3; }
 
 /* Reference */
@@ -265,28 +272,28 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
   </div>
   <figure>
     <div class="fig">
-      <svg viewBox="0 0 960 340" role="img" aria-label="Five stacked levels. Epic, release and story sit above a dashed line and are read by the client. Task and code sit below the line and are worked by the team and agents.">
+      <svg viewBox="0 0 960 340" role="img" aria-label="Five stacked levels. Epic, release and story sit above a dashed line and are read by the client. Task, a piece of work inside a story, and code sit below the line and are worked by the team and agents.">
         <rect class="bx-c" x="310" y="10" width="240" height="54" rx="8"/><text x="430" y="33" text-anchor="middle" class="b">Epic</text><text x="430" y="51" text-anchor="middle" class="s m">something a person does</text>
         <rect class="bx-c" x="270" y="72" width="320" height="54" rx="8"/><text x="430" y="95" text-anchor="middle" class="b">Release</text><text x="430" y="113" text-anchor="middle" class="s m">one testable outcome, a budget, a target date</text>
-        <rect class="bx-c" x="230" y="134" width="400" height="54" rx="8"/><text x="430" y="157" text-anchor="middle" class="b">Story</text><text x="430" y="175" text-anchor="middle" class="s m">one thing a user can do, with acceptance criteria</text>
+        <rect class="bx-c" x="230" y="134" width="400" height="54" rx="8"/><text x="430" y="157" text-anchor="middle" class="b">Story</text><text x="430" y="175" text-anchor="middle" class="s m">one thing a user can do; one assignee</text>
         <path class="ln-d" d="M120 200H940"/>
         <text x="0" y="194" class="k">above the line</text><text x="0" y="214" class="k">below the line</text>
-        <rect class="bx-t" x="190" y="212" width="480" height="54" rx="8"/><text x="430" y="235" text-anchor="middle" class="b">Task</text><text x="430" y="253" text-anchor="middle" class="s m">a technical step towards a story, up to a day</text>
+        <rect class="bx-t" x="190" y="212" width="480" height="54" rx="8"/><text x="430" y="235" text-anchor="middle" class="b">Task</text><text x="430" y="253" text-anchor="middle" class="s m">work inside a story, like a Jira subtask</text>
         <rect class="bx-t" x="150" y="274" width="560" height="54" rx="8"/><text x="430" y="297" text-anchor="middle" class="b">Code</text><text x="430" y="315" text-anchor="middle" class="s m">pull requests, reviews, decision records</text>
         <path d="M722 10h10V188h-10" fill="none" stroke="var(--client)" stroke-width="1.75"/>
         <text x="746" y="88" class="b tc">Client reads this</text><text x="746" y="106" class="s m">plain language, no file names</text><text x="746" y="122" class="s m">written at project start</text>
         <path d="M722 212h10V328h-10" fill="none" stroke="var(--team)" stroke-width="1.75"/>
-        <text x="746" y="260" class="b tt">Team and agents work here</text><text x="746" y="278" class="s m">technical detail</text><text x="746" y="294" class="s m">written as each release starts</text>
+        <text x="746" y="260" class="b tt">Team and agents work here</text><text x="746" y="278" class="s m">technical detail</text><text x="746" y="294" class="s m">written at release start or start of story</text>
       </svg>
     </div>
-    <figcaption>A story belongs to one epic and one release. A small story needs no tasks.</figcaption>
+    <figcaption>A story belongs to one epic and one release, and is the smallest unit that is blocked or ready. A small story needs no tasks.</figcaption>
   </figure>
 </section>
 
 <section id="release">
   <div class="block">
     <h2>One release, start to finish</h2>
-    <p>The client is in the loop three times: they make the decisions the release depends on, they can watch the stories move at any time, and they test the outcome themselves. The release review is the only fixed meeting.</p>
+    <p>The client is in the loop three times: they make the decisions the release depends on, they follow the same stories the team pulls, at any time, and they test the outcome themselves. The release review is the only fixed meeting.</p>
   </div>
   <figure>
     <div class="fig">
@@ -301,8 +308,8 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <path class="bx" d="M600 90L670 50L740 90L670 130Z"/><text x="670" y="94" text-anchor="middle" class="b">Outcome met?</text>
         <rect class="bx-d" x="770" y="60" width="160" height="60" rx="8"/><text x="850" y="86" text-anchor="middle" class="b">Accept in writing</text><text x="850" y="104" text-anchor="middle" class="s m">the release is closed</text>
 
-        <rect class="bx-t" x="30" y="200" width="160" height="60" rx="8"/><text x="110" y="226" text-anchor="middle" class="b">Plan the release</text><text x="110" y="244" text-anchor="middle" class="s m">stories, priorities, tasks</text>
-        <rect class="bx-t" x="220" y="200" width="160" height="60" rx="8"/><text x="300" y="226" text-anchor="middle" class="b">Build</text><text x="300" y="244" text-anchor="middle" class="s m">tasks pulled, code merged</text>
+        <rect class="bx-t" x="30" y="200" width="160" height="60" rx="8"/><text x="110" y="226" text-anchor="middle" class="b">Plan the release</text><text x="110" y="244" text-anchor="middle" class="s m">stories, priorities, links</text>
+        <rect class="bx-t" x="220" y="200" width="160" height="60" rx="8"/><text x="300" y="226" text-anchor="middle" class="b">Build</text><text x="300" y="244" text-anchor="middle" class="s m">stories pulled, code merged</text>
         <rect class="bx-t" x="590" y="200" width="160" height="60" rx="8"/><text x="670" y="226" text-anchor="middle" class="b">Adjust the stories</text><text x="670" y="244" text-anchor="middle" class="s m">agreed with the client</text>
         <rect class="bx-t" x="770" y="200" width="160" height="60" rx="8"/><text x="850" y="226" text-anchor="middle" class="b">Re-plan what is next</text><text x="850" y="244" text-anchor="middle" class="s m">later stories reshaped</text>
 
@@ -325,7 +332,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 <section id="planning">
   <div class="block">
     <h2>Plan in outline far ahead, in detail close up</h2>
-    <p>Every story is written at the start of the project. Tasks are written only for the release that is about to start, from the code as it is that day. Later releases will change after the client tests the earlier ones, so detailed planning for them would be wasted.</p>
+    <p>Every story is written at the start of the project. A story's tasks are written only when its release starts or the story is started, from the code as it is that day. Later releases will change after the client tests the earlier ones, so detailed planning for them would be wasted.</p>
     <div class="seg" role="group" aria-label="Choose a moment in the project">
       <button type="button" id="hz-start" data-now="-1" aria-pressed="false">Project start</button>
       <button type="button" id="hz-1" data-now="0" aria-pressed="false">Release 1 starts</button>
@@ -342,7 +349,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <text x="0" y="222" class="b">Tasks</text><text x="0" y="239" class="s m">one release</text><text x="0" y="254" class="s m">at a time</text>
       </svg>
     </div>
-    <figcaption>Pick a moment above. Stories are always there for every release; tasks appear only when a release begins.</figcaption>
+    <figcaption>Pick a moment above. Stories are always there for every release; their tasks appear only when a release begins.</figcaption>
   </figure>
 
   <div class="block">
@@ -419,7 +426,7 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <li>Staff can still cancel any booking <span class="tag">api</span></li>
         <li>The refund shown matches the amount refunded <span class="tag">db</span></li>
       </ol></div></div>
-      <div class="part"><span class="num">5</span><div><h5>Depends on</h5><ul><li>Guests can sign in (Release 1)</li><li>Guests can make a booking (Release 1)</li></ul></div></div>
+      <div class="part"><span class="num">5</span><div><h5>Depends on</h5><ul><li>Guests can sign in (Release 1)</li><li>Guests can make a booking (Release 1)</li><li>Refund window (input: the client)</li></ul></div></div>
       <div class="part"><span class="num">6</span><div><h5>Blocked on</h5><p>The client confirms the refund window, in days, before the release starts.</p></div></div>
     </article>
     <div class="block">
@@ -427,18 +434,18 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         <li><span class="num">1</span><span><b>Outcome first.</b> Who gets what and why, in one or two sentences.</span></li>
         <li><span class="num">2</span><span><b>Requirements as a table.</b> Needs and their detail, not prose.</span></li>
         <li><span class="num">3</span><span><b>Say what is left out,</b> and the release where it arrives if known.</span></li>
-        <li><span class="num">4</span><span><b>Each criterion is one checkable outcome</b> and says how it is proved. A criterion that forbids something is paired with one showing the allowed path still works. They are numbered so tasks can cite them.</span></li>
-        <li><span class="num">5</span><span><b>Stories that must land first.</b> A rough link, used to order the work and place the story in a release. Once the release has tasks, the task links take over.</span></li>
-        <li><span class="num">6</span><span><b>Anything the client must supply</b> is named: who, what, in which format, by when. It becomes a client decision in the task graph.</span></li>
+        <li><span class="num">4</span><span><b>Each criterion is one checkable outcome</b> and says how it is proved. A criterion that forbids something is paired with one showing the allowed path still works. They are numbered so its tasks can cite them.</span></li>
+        <li><span class="num">5</span><span><b>Stories or inputs that must be done first.</b> The release's dependency graph is built from this. Record it as a dependency link where the tracker has one, so the ready set can be computed.</span></li>
+        <li><span class="num">6</span><span><b>Anything the client must supply</b> is named: who, what, in which format, by when. It becomes an input in the release's graph.</span></li>
       </ol>
       <div class="never"><b>Never in a story</b><span>File paths, function names, or how to build it. Constraints are stated in words, such as "reuses the existing access roles". The agent finds the rest in the code when the release starts.</span></div>
-      <p class="muted" style="font-size:15px">Epic, release, priority, estimate and assignee are fields in the tracker, not text in the body.</p>
+      <p class="muted" style="font-size:15px">Epic, release, priority, estimate, assignee and status are fields in the tracker, not text in the body.</p>
     </div>
   </div>
 
   <div class="block">
     <h3>Splitting a story that is too big</h3>
-    <p>Split a story when it is over two days, hides an unknown, or part of it could ship earlier. Otherwise leave it whole. There are five ways to cut; split on one, then look again.</p>
+    <p>Split a story when it is over two days, hides an unknown, part of it could ship earlier, or another story needs only part of it. Otherwise leave it whole. There are five ways to cut; split on one, then look again.</p>
     <div class="key"><span><i class="k-hot"></i>ships first</span><span><i class="k-blocked"></i>follows later</span></div>
   </div>
   <div class="spidr">
@@ -457,74 +464,70 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
 
 <section id="building">
   <div class="block">
-    <h2>Stories become tasks when a release starts</h2>
-    <p>The technical PM sets out every task for the release before building begins. A coding agent drafts them from the code as it is that day; the technical PM corrects the direction and publishes the result. Developers are free within a task. Anything that changes the approach or the dependencies comes back to the technical PM.</p>
+    <h2>The story is the unit of work</h2>
+    <p>A story is what waits on other work, what is ready and what is confirmed done. Its assignee starts it, works through its tasks with help from anyone free, and finishes it, so stories land one at a time and the client can test each as it does, instead of effort spreading across many half-done stories.</p>
+    <p>When a release starts, the technical PM draws its dependency graph between stories and inputs, assigns each story to a developer and sets the direction. Each story's tasks are drafted by a coding agent from the code as it is that day, at release start or when the story is started. Anything that changes a story's scope or the dependencies comes back to the technical PM.</p>
   </div>
   <figure>
     <div class="fig">
-      <svg viewBox="0 0 960 170" role="img" aria-label="Five steps. The technical PM takes the release's signed-off stories, a coding agent drafts tasks from the code, the technical PM sets the direction and publishes the task graph, and developers pull and build. A change to the approach or dependencies returns to the technical PM.">
+      <svg viewBox="0 0 960 170" role="img" aria-label="Five stages. The technical PM takes the release's signed-off stories, draws the dependency graph between stories and inputs, and sets the direction. A coding agent drafts each story's tasks from the code, and developers pull stories from the ready set. A change to the scope or dependencies returns to the technical PM.">
         <defs><marker id="m8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
-        <text x="0" y="16" class="k">Technical PM</text><text x="198" y="16" class="k">Coding agent</text><text x="396" y="16" class="k">Technical PM</text><text x="594" y="16" class="k">Technical PM</text><text x="792" y="16" class="k">Developers</text>
+        <text x="0" y="16" class="k">Technical PM</text><text x="198" y="16" class="k">Technical PM</text><text x="396" y="16" class="k">Technical PM</text><text x="594" y="16" class="k">Coding agent</text><text x="792" y="16" class="k">Developers</text>
         <rect class="bx-c" x="0" y="28" width="168" height="74" rx="8"/><text x="84" y="52" text-anchor="middle" class="b">The release's stories</text><text x="84" y="70" text-anchor="middle" class="s m">criteria and estimates</text><text x="84" y="86" text-anchor="middle" class="s m">signed off</text>
-        <rect class="bx-t" x="198" y="28" width="168" height="74" rx="8"/><text x="282" y="52" text-anchor="middle" class="b">Draft the tasks</text><text x="282" y="70" text-anchor="middle" class="s m">from the code</text><text x="282" y="86" text-anchor="middle" class="s m">as it is today</text>
-        <rect class="bx-h" x="396" y="28" width="168" height="74" rx="8"/><text x="480" y="52" text-anchor="middle" class="b">Set the direction</text><text x="480" y="70" text-anchor="middle" class="s m">approach, order, reuse,</text><text x="480" y="86" text-anchor="middle" class="s m">decisions needed first</text>
-        <rect class="bx-t" x="594" y="28" width="168" height="74" rx="8"/><text x="678" y="52" text-anchor="middle" class="b">Publish the task graph</text><text x="678" y="70" text-anchor="middle" class="s m">tasks, dependencies,</text><text x="678" y="86" text-anchor="middle" class="s m">client decisions</text>
-        <rect class="bx-t" x="792" y="28" width="168" height="74" rx="8"/><text x="876" y="52" text-anchor="middle" class="b">Pull and build</text><text x="876" y="70" text-anchor="middle" class="s m">free within a task</text>
+        <rect class="bx-t" x="198" y="28" width="168" height="74" rx="8"/><text x="282" y="52" text-anchor="middle" class="b">Draw the graph</text><text x="282" y="70" text-anchor="middle" class="s m">links between stories</text><text x="282" y="86" text-anchor="middle" class="s m">and inputs</text>
+        <rect class="bx-h" x="396" y="28" width="168" height="74" rx="8"/><text x="480" y="52" text-anchor="middle" class="b">Set the direction</text><text x="480" y="70" text-anchor="middle" class="s m">approach, assignees,</text><text x="480" y="86" text-anchor="middle" class="s m">decisions needed first</text>
+        <rect class="bx-t" x="594" y="28" width="168" height="74" rx="8"/><text x="678" y="52" text-anchor="middle" class="b">Draft the tasks</text><text x="678" y="70" text-anchor="middle" class="s m">from today's code,</text><text x="678" y="86" text-anchor="middle" class="s m">now or when started</text>
+        <rect class="bx-t" x="792" y="28" width="168" height="74" rx="8"/><text x="876" y="52" text-anchor="middle" class="b">Pull stories</text><text x="876" y="70" text-anchor="middle" class="s m">from the ready set;</text><text x="876" y="86" text-anchor="middle" class="s m">help on their tasks</text>
         <path class="ln" d="M168 65H196" marker-end="url(#m8)"/><path class="ln" d="M366 65H394" marker-end="url(#m8)"/><path class="ln" d="M564 65H592" marker-end="url(#m8)"/><path class="ln" d="M762 65H790" marker-end="url(#m8)"/>
-        <path class="ln-d" d="M876 102V136H480V104" marker-end="url(#m8)"/><text x="678" y="156" text-anchor="middle" class="s m">a change to the approach or the dependencies comes back</text>
+        <path class="ln-d" d="M876 102V136H480V104" marker-end="url(#m8)"/><text x="678" y="156" text-anchor="middle" class="s m">a change to the scope or the dependencies comes back</text>
       </svg>
     </div>
-    <figcaption>This is where the technical direction of a release is set, once, by one person, before any code is written.</figcaption>
+    <figcaption>This is where the technical direction of a release is set, once, by one person, before any code is written. The tasks inside the stories follow it.</figcaption>
   </figure>
 
   <div class="block">
     <h3>What a task looks like</h3>
-    <p>A task is a working note for the team, not a contract. It adds only what the story leaves out: the technical how. Outcome, scope, priority and release are inherited from the story, and so are the acceptance criteria: a task points at the ones it proves.</p>
+    <p>A story's tasks are an optional list of the technical work inside it. A task is a working note for the team, not a contract. It adds only what the story leaves out: the technical how. Outcome, scope, priority, release and dependencies are inherited from the story, and so are the acceptance criteria: a task points at the ones it proves. A task works like a Jira subtask: it has an optional assignee, who may differ from the story's, and its own status of To do, In progress or Done, set by whoever works on it. Once the story is in progress and its assignee has approved the tasks, any developer can assign themselves one. Tasks are never blocked and never in the ready set.</p>
   </div>
   <div class="anatomy">
     <article class="story" aria-label="Example task">
       <h4>Refund payment</h4>
-      <div class="fields" aria-label="Link held by the tracker"><span>Story: Guests can cancel a booking</span></div>
+      <div class="fields" aria-label="Held by the tracker"><span>Story: Guests can cancel a booking</span><span>Assignee: Priya</span><span>In progress</span></div>
       <div class="part"><span class="num">1</span><div><p>Add the endpoint that cancels a booking and returns the refund amount.</p></div></div>
-      <div class="part"><span class="num">2</span><div><h5>Depends on</h5><ul>
-        <li>Bookings store <span class="muted">(this story)</span></li>
-        <li>Sign-in session <span class="muted">(story: Guests can sign in)</span></li>
-      </ul></div></div>
-      <div class="part"><span class="num">3</span><div><h5>Proves</h5><ul>
+      <div class="part"><span class="num">2</span><div><h5>Proves</h5><ul>
         <li>Criterion 2 <span class="muted">A guest cannot cancel someone else's booking</span></li>
         <li>Criterion 3 <span class="muted">Staff can still cancel any booking</span></li>
       </ul></div></div>
-      <div class="part"><span class="num">4</span><div><h5>Notes</h5><ul>
+      <div class="part"><span class="num">3</span><div><h5>Notes</h5><ul>
         <li>Follow the shape of the existing booking routes</li>
         <li>Reuse the existing access roles: guest and staff</li>
       </ul></div></div>
-      <div class="part"><span class="num">5</span><div><h5>Done when</h5><ul><li>The migration applies cleanly to a fresh database <span class="tag">cli</span></li></ul></div></div>
+      <div class="part"><span class="num">4</span><div><h5>Done when</h5><ul><li>The migration applies cleanly to a fresh database <span class="tag">cli</span></li></ul></div></div>
     </article>
     <div class="block">
       <ol class="notes">
         <li><span class="num">1</span><span><b>One sentence naming the change,</b> not the user outcome. The story already says why.</span></li>
-        <li><span class="num">2</span><span><b>Depends on is what the graph is built from.</b> It names tasks, in this story or another, and client decisions. Record it as a dependency link where the tracker has one, so the ready set can be computed.</span></li>
-        <li><span class="num">3</span><span><b>Proves names the story's criteria this task answers for,</b> by number. A task has no acceptance criteria of its own. Every story criterion must be claimed by at least one task; one that nobody claims is a gap found at planning.</span></li>
-        <li><span class="num">4</span><span><b>Notes from the investigation:</b> the pattern to follow, what to check first, exact names and counts. File and function names are fine here; a task is short-lived.</span></li>
-        <li><span class="num">5</span><span><b>"Done when" is usually empty.</b> It holds only technical conditions the client would not recognise as something they asked for. Everything else is a story criterion, cited under Proves.</span></li>
+        <li><span class="num">2</span><span><b>Proves names the story's criteria this task answers for,</b> by number. A task has no acceptance criteria of its own. Every story criterion must be proved by at least one task; one that no task proves is a gap found when the tasks are approved.</span></li>
+        <li><span class="num">3</span><span><b>Notes from the investigation:</b> the pattern to follow, what to check first, exact names and counts. File and function names are fine here; a task is short-lived.</span></li>
+        <li><span class="num">4</span><span><b>"Done when" is usually empty.</b> It holds only technical conditions the client would not recognise as something they asked for. Everything else is a story criterion, cited under Proves.</span></li>
       </ol>
-      <div class="never"><b>Work with no story</b><span>Upkeep such as dependency upgrades or pipeline fixes sits as tasks under a standing maintenance epic. No story is invented for it.</span></div>
+      <div class="never"><b>No dependencies on a task</b><span>Dependencies run between stories and inputs, never between tasks. If a story needs only part of another, split that story so the part it needs is a story of its own. Upkeep with no user outcome, such as dependency upgrades, is a story under a standing maintenance epic.</span></div>
     </div>
   </div>
 
   <div class="block">
     <h3>Work is pulled, not assigned</h3>
-    <p>There is one dependency graph per release, drawn between tasks and running across stories. A task may wait on a task in another story, or on an input such as a client decision. Status is worked out from those links and never set by hand, so nobody has to work out what they can start: the ready set is every task with nothing in its way.</p>
-    <p>A story's own state is read off its tasks, not kept separately. Before a release has tasks, stories carry rough "depends on" links to order the work; once the tasks exist, they are the source of truth.</p>
-    <p>Each story has an owner: the developer who holds its design. Owning a story is not doing all of it. Anyone may claim a ready task in any story, and the owner approves the plan. A developer's ready set lists their own stories first, then everyone else's.</p>
+    <p>There is one dependency graph per release, drawn between stories and inputs. "B depends on A" means story B normally waits for story or input A to be done. A story is blocked or ready, worked out from its dependencies, until its assignee starts it; then it is in progress, and done once a person confirms it. Nobody has to work out what they can start: the ready set is every ready story in the release.</p>
+    <p>A dependency is information, not a lock, as in Jira, GitHub and Linear. A blocked story stays out of the ready set, but a person can still start it knowingly, for example by stacking a branch on the unmerged work it needs.</p>
+    <p>Each story has one assignee, set by the technical PM: the developer who holds its design, approves its tasks and starts it. Anyone may start a ready story, and whoever starts someone else's story becomes its assignee. Once a story is in progress and its tasks are approved, anyone free can assign themselves one of its tasks and help. A developer's ready set lists the stories assigned to them first, then everyone else's, each by how many stories it unblocks.</p>
     <div class="key">
-      <span><i class="k-hot"></i>ready</span><span><i class="k-team"></i>in progress (claimed)</span><span><i class="k-done"></i>done</span><span><i class="k-blocked"></i>blocked</span><span><i class="k-gate"></i>waiting on an input</span>
+      <span><i class="k-hot"></i>ready</span><span><i class="k-team"></i>in progress</span><span><i class="k-done"></i>done</span><span><i class="k-blocked"></i>blocked</span><span><i class="k-gate"></i>waiting on an input</span>
     </div>
   </div>
   <figure>
     <div class="graphwrap">
       <div class="fig">
-        <svg id="graph" viewBox="0 0 960 302" role="group" aria-label="Task dependency graph across three stories, each with a named owner. Select a ready task to claim it, select it again to finish it, and select the client decision to mark it decided."></svg>
+        <svg id="graph" viewBox="0 0 960 294" role="group" aria-label="Dependency graph between seven stories and one client input. Each story has one assignee and a list of tasks. Select a ready story to start it, select it again to approve its tasks, select a task to take it and move it on, and select the story to confirm it done. Select the client input to mark it decided."></svg>
       </div>
       <aside class="ready" aria-live="polite">
         <span class="lbl">You are</span>
@@ -535,45 +538,46 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
         </div>
         <h4>Your ready set</h4>
         <ol id="readylist"></ol>
-        <p class="empty" id="readyempty" hidden>Nothing is ready. Everything left is in progress, done, or waiting.</p>
+        <p class="empty" id="readyempty" hidden>No story is ready. Everything left is in progress, done, or waiting.</p>
         <button type="button" class="btn" id="graphreset">Start again</button>
       </aside>
     </div>
-    <figcaption>Priya's own story is waiting on the client, so her ready set offers a task in Sam's story. Try it: select a ready task to claim it, and again to finish it. Select the client decision to settle it. Switch developer to see the order change.</figcaption>
+    <figcaption>Priya's own stories are waiting, so her ready set offers Sam's; starting it makes her its assignee. Or she can help on Ade's story, already in progress, by selecting its open task. Try it: select a ready story to start it, again to approve its tasks, then select a task to take it and again to finish it. When every task is done, select the story to confirm it. A blocked story can still be selected, to start it knowingly. Switch developer to see the order change.</figcaption>
   </figure>
+  <div class="never"><b>What this gives up</b><span>A dependency waits for a whole story. Readiness and dependencies only work at story level: two people can work on separate parts of one story by assigning themselves its tasks, but nothing ever points anyone at a task. Both cost little, because no story is over two days.</span></div>
 
   <div class="block">
-    <h3>One task, from claim to merge</h3>
-    <p>People steer; agents investigate and build. An agent never starts coding on its own plan and never merges. Two checkpoints belong to a person: the plan, and the merge. When the task sits in someone else's story, that story's owner approves the plan.</p>
+    <h3>One story, from start to done</h3>
+    <p>People steer; agents investigate and build. An agent never starts coding on its own plan and never merges. Three checkpoints belong to a person: the tasks, each merge, and confirming the story done. The story's assignee approves the tasks. Whoever takes a task runs it through build, review and merge, so two people can work one story side by side. The story's branches and pull requests, stacked if need be, belong to the story and are reviewed as one feature.</p>
   </div>
   <figure>
     <div class="fig">
-      <svg viewBox="0 0 960 324" role="img" aria-label="A two-lane flow. The developer claims a task, the agent investigates and plans, the developer approves the plan, the agent builds and proves each criterion, the developer reviews and merges. Merging recomputes status and makes new tasks ready.">
+      <svg viewBox="0 0 960 324" role="img" aria-label="A two-lane flow. The assignee starts a story, the agent drafts its tasks from the code, the assignee approves them, the agent builds a task and proves its criteria, and whoever took the task reviews and merges it, which moves it to done. This repeats for each task, possibly by different developers. When every task is done, a person confirms the story done, which recomputes status and makes new stories ready.">
         <defs><marker id="m6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto"><path class="ah" d="M0 0L10 5L0 10z"/></marker></defs>
-        <rect class="lane-c" x="0" y="36" width="960" height="96" rx="10"/><text x="12" y="52" class="k">Developer</text>
+        <rect class="lane-c" x="0" y="36" width="960" height="96" rx="10"/><text x="12" y="52" class="k">People</text>
         <rect class="lane-t" x="0" y="160" width="960" height="96" rx="10"/><text x="12" y="176" class="k">Coding agent</text>
 
-        <rect class="bx" x="10" y="62" width="144" height="56" rx="8"/><text x="82" y="86" text-anchor="middle" class="b">Claim a task</text><text x="82" y="104" text-anchor="middle" class="s m">from the ready set</text>
-        <rect class="bx-t" x="167" y="184" width="144" height="56" rx="8"/><text x="239" y="208" text-anchor="middle" class="b">Investigate, plan</text><text x="239" y="226" text-anchor="middle" class="s m">reads today's code</text>
-        <rect class="bx-h" x="324" y="62" width="144" height="56" rx="8"/><text x="396" y="86" text-anchor="middle" class="b">Approve the plan</text><text x="396" y="104" text-anchor="middle" class="s m">before any code</text>
-        <rect class="bx-t" x="481" y="184" width="144" height="56" rx="8"/><text x="553" y="208" text-anchor="middle" class="b">Build</text><text x="553" y="226" text-anchor="middle" class="s m">only what was planned</text>
-        <rect class="bx-t" x="638" y="184" width="144" height="56" rx="8"/><text x="710" y="208" text-anchor="middle" class="b">Prove each criterion</text><text x="710" y="226" text-anchor="middle" class="s m">with real output</text>
-        <rect class="bx-h" x="795" y="62" width="144" height="56" rx="8"/><text x="867" y="86" text-anchor="middle" class="b">Review and merge</text><text x="867" y="104" text-anchor="middle" class="s m">a person merges</text>
+        <rect class="bx" x="10" y="62" width="144" height="56" rx="8"/><text x="82" y="86" text-anchor="middle" class="b">Start a story</text><text x="82" y="104" text-anchor="middle" class="s m">from the ready set</text>
+        <rect class="bx-t" x="167" y="184" width="144" height="56" rx="8"/><text x="239" y="208" text-anchor="middle" class="b">Draft the tasks</text><text x="239" y="226" text-anchor="middle" class="s m">from today's code</text>
+        <rect class="bx-h" x="324" y="62" width="144" height="56" rx="8"/><text x="396" y="86" text-anchor="middle" class="b">Approve the tasks</text><text x="396" y="104" text-anchor="middle" class="s m">the story's assignee</text>
+        <rect class="bx-t" x="481" y="184" width="144" height="56" rx="8"/><text x="553" y="208" text-anchor="middle" class="b">Build a task</text><text x="553" y="226" text-anchor="middle" class="s m">and prove its criteria</text>
+        <rect class="bx-h" x="638" y="62" width="144" height="56" rx="8"/><text x="710" y="86" text-anchor="middle" class="b">Review and merge</text><text x="710" y="104" text-anchor="middle" class="s m">the task is done</text>
+        <rect class="bx-d" x="795" y="62" width="144" height="56" rx="8"/><text x="867" y="86" text-anchor="middle" class="b">Confirm done</text><text x="867" y="104" text-anchor="middle" class="s m">every task done</text>
 
         <path class="ln" d="M154 90H239V182" marker-end="url(#m6)"/>
         <path class="ln" d="M311 212H396V120" marker-end="url(#m6)"/>
         <path class="ln" d="M468 90H553V182" marker-end="url(#m6)"/>
-        <path class="ln" d="M625 212H636" marker-end="url(#m6)"/>
-        <path class="ln" d="M782 212H867V120" marker-end="url(#m6)"/>
+        <path class="ln" d="M625 212H710V120" marker-end="url(#m6)"/>
+        <path class="ln" d="M782 90H793" marker-end="url(#m6)"/>
         <path class="ln-d" d="M350 118V148H285V182" marker-end="url(#m6)"/><text x="318" y="143" text-anchor="middle" class="s m">revise</text>
-        <path class="ln-d" d="M820 118V148H600V182" marker-end="url(#m6)"/><text x="710" y="143" text-anchor="middle" class="s m">fix</text>
-        <path class="ln" d="M867 62V22H82V60" marker-end="url(#m6)"/><text x="474" y="15" text-anchor="middle" class="s m">merged: status recomputes, newly unblocked tasks join the ready set</text>
+        <path class="ln-d" d="M670 118V148H600V182" marker-end="url(#m6)"/><text x="662" y="143" text-anchor="end" class="s m">next task, or a fix</text>
+        <path class="ln" d="M867 62V22H82V60" marker-end="url(#m6)"/><text x="474" y="15" text-anchor="middle" class="s m">done: status recomputes, newly unblocked stories join the ready set</text>
 
         <path class="ln-d" d="M553 240V268"/>
         <rect class="ghost-t" x="481" y="268" width="301" height="46" rx="8"/><text x="493" y="287" class="s b">Material, non-obvious decision on the way?</text><text x="493" y="303" class="s m">Write a decision record with the change.</text>
       </svg>
     </div>
-    <figcaption>Proof means the decisive lines of real output for every acceptance criterion, kept in the pull request. An agent may propose that a task is done; a person confirms it.</figcaption>
+    <figcaption>Each merge moves the tasks it closes to done. A small story with no tasks goes straight from start to one pull request. Proof means the decisive lines of real output for every acceptance criterion, kept in the pull requests. An agent may propose that a story is done once every task is done; a person confirms it.</figcaption>
   </figure>
 </section>
 
@@ -618,7 +622,8 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
     <h3>Principles</h3>
     <ul class="principles">
       <li><b>Outcomes before tasks</b>A release is defined by something the client can test, not by a list of work.</li>
-      <li><b>Plain language above the line</b>The client reads stories. The team and its agents work in tasks.</li>
+      <li><b>Finish stories one at a time</b>A story is started, worked through and finished, so the client can test each as it lands.</li>
+      <li><b>Plain language above the line</b>The client reads stories. The team and its agents work in each story's tasks.</li>
       <li><b>Outline far ahead, detail close up</b>Stories for the project; tasks for the next release only.</li>
       <li><b>Outcomes and budget hold; depth flexes</b>What was promised is delivered within the days agreed. Dates are targets.</li>
       <li><b>Acceptance criteria are the contract</b>What is in them is required and proven.</li>
@@ -631,29 +636,29 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
     <div class="tscroll"><table>
       <thead><tr><th>Role</th><th>Does</th></tr></thead>
       <tbody>
-        <tr><td>Technical PM</td><td>Owns the plan above and below the line. Writes epics and stories, agrees priorities with the client, signs off criteria and estimates, sets out the tasks for each release, sets technical direction, runs the release review</td></tr>
-        <tr><td>Story owner</td><td>A developer named on a story, or a whole epic, who holds its design. Approves plans for tasks in it and is the first call for changes inside it. Does not have to build all of it</td></tr>
-        <tr><td>Developer</td><td>Reviews the stories before each release starts, claims ready tasks in any story, approves agent plans, reviews, merges, writes decision records that arise mid-task</td></tr>
-        <tr><td>Coding agent</td><td>Investigates, drafts stories and tasks, implements, proves each criterion with real output</td></tr>
+        <tr><td>Technical PM</td><td>Owns the plan above and below the line. Writes epics and stories, agrees priorities with the client, signs off criteria and estimates, draws each release's dependency graph and assigns its stories, sets technical direction, runs the release review</td></tr>
+        <tr><td>Story assignee</td><td>The one developer on a story. Holds its design, approves its tasks, starts it and is the first call for changes inside it. Does not have to build every task</td></tr>
+        <tr><td>Developer</td><td>Reviews the stories before each release starts, starts ready stories, assigns themselves tasks in stories already in progress, works through tasks with agents, reviews, merges, writes decision records that arise mid-story</td></tr>
+        <tr><td>Coding agent</td><td>Investigates, drafts stories and their tasks, implements, proves each criterion with real output</td></tr>
         <tr><td>Client</td><td>Follows stories in the tracker, makes the decisions each release needs, tests the outcome, accepts in writing</td></tr>
       </tbody>
     </table></div>
-    <p class="muted" style="font-size:15px">On larger projects the client-facing half (stories, priorities, chasing client decisions, the release review) may be handed to a client lead. Criteria, estimates and tasks stay with the technical PM.</p>
+    <p class="muted" style="font-size:15px">On larger projects the client-facing half (stories, priorities, chasing client decisions, the release review) may be handed to a client lead. Criteria, estimates and the dependency graph stay with the technical PM.</p>
   </div>
   <div class="block">
     <h3>In any tracker</h3>
-    <p>Slipstream is defined by its concepts, not a tool. Stories live in the tracker the client reads. Tasks live there or in the repository, with the other as a mirror. Decision records always live in the repository.</p>
+    <p>Slipstream is defined by its concepts, not a tool. Stories live in the tracker the client reads. A story's tasks live there or in the repository, with the other as a mirror. Decision records always live in the repository.</p>
     <div class="tscroll"><table>
       <thead><tr><th>Concept</th><th>Jira</th><th>GitHub</th><th>Monday</th></tr></thead>
       <tbody>
         <tr><td>Epic</td><td>Epic</td><td>Parent issue</td><td>Item on an epics board</td></tr>
         <tr><td>Release</td><td>Fix version</td><td>Milestone</td><td>Group</td></tr>
         <tr><td>Story</td><td>Story</td><td>Sub-issue of the epic</td><td>Item</td></tr>
-        <tr><td>Task</td><td>Sub-task</td><td>Sub-issue of the story</td><td>Subitem</td></tr>
+        <tr><td>Task</td><td>Sub-task, with its own assignee and status</td><td>Sub-issue of the story, with its own assignee and open or closed state</td><td>Subitem, with its own person and status columns</td></tr>
         <tr><td>Priority</td><td>Label or custom field</td><td>Project field or label</td><td>Status column</td></tr>
         <tr><td>Estimate, in days</td><td>Original estimate</td><td>Project number field</td><td>Numbers column</td></tr>
-        <tr><td>Dependency</td><td>"Blocks" link</td><td>"Blocked by" relation</td><td>Dependency column</td></tr>
-        <tr><td>Claim</td><td>Assignee and In Progress</td><td>Assignee</td><td>Person column</td></tr>
+        <tr><td>Dependency</td><td>"Blocks" link between stories</td><td>"Blocked by" relation between stories</td><td>Dependency column on stories</td></tr>
+        <tr><td>Assignee</td><td>Assignee, on the story and optionally on each sub-task</td><td>Assignee, on the story and optionally on each sub-issue</td><td>Person column, on the item and optionally on each subitem</td></tr>
         <tr><td>Input</td><td>Linked issue, labelled with its type</td><td>Issue labelled with its type</td><td>Item in an inputs group</td></tr>
       </tbody>
     </table></div>
@@ -714,44 +719,44 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
   hzBtns.forEach(function (b) { b.addEventListener('click', function () { setNow(Number(b.dataset.now)); }); });
   setNow(1);
 
-  /* Task graph */
-  var W = 170, H = 56;
-  var stories = [
-    { id: 'A', title: 'Guests can cancel a booking', owner: 'Sam', y: 8 },
-    { id: 'B', title: 'Guests are refunded', owner: 'Priya', y: 106 },
-    { id: 'C', title: 'Guests get a confirmation email', owner: 'Ade', y: 204 }
-  ];
-  var storyById = {};
-  stories.forEach(function (s) { storyById[s.id] = s; });
+  /* Story graph: stories and inputs are the nodes; tasks live inside a story, like Jira subtasks */
+  var W = 204, H = 70, TW = 20, TG = 4;
   var nodes = [
-    { id: 'T1', story: 'A', title: 'Bookings store', deps: [], x: 20 },
-    { id: 'T2', story: 'A', title: 'Cancel endpoint', deps: ['T1'], x: 265 },
-    { id: 'T4', story: 'A', title: 'Cancel button', deps: ['T2'], x: 510 },
-    { id: 'T7', story: 'A', title: 'Staff cancel screen', deps: ['T4'], x: 755 },
-    { id: 'G1', story: 'B', title: 'Refund window', deps: [], x: 20, gate: true },
-    { id: 'T3', story: 'B', title: 'Refund rule', deps: ['G1'], x: 265 },
-    { id: 'T5', story: 'B', title: 'Refund payment', deps: ['T2', 'T3'], x: 510 },
-    { id: 'T8', story: 'C', title: 'Email template', deps: [], x: 510 },
-    { id: 'T6', story: 'C', title: 'Confirmation email', deps: ['T8', 'T4', 'T5'], x: 755 }
+    { id: 'S1', title: 'Guests see their bookings', assignee: 'Sam', tasks: 2, deps: [], x: 10, y: 10 },
+    { id: 'G1', title: 'Refund window', deps: [], x: 10, y: 112, gate: true },
+    { id: 'S2', title: 'Branded emails', assignee: 'Ade', tasks: 2, deps: [], x: 10, y: 214 },
+    { id: 'S3', title: 'Guests can cancel', assignee: 'Sam', tasks: 3, deps: ['S1'], x: 254, y: 61 },
+    { id: 'S4', title: 'Staff cancel for guests', assignee: 'Sam', tasks: 2, deps: ['S3'], x: 498, y: 10 },
+    { id: 'S5', title: 'Guests are refunded', assignee: 'Priya', tasks: 3, deps: ['S3', 'G1'], x: 498, y: 112 },
+    { id: 'S6', title: 'Cancellation email', assignee: 'Ade', tasks: 2, deps: ['S3', 'S2'], x: 498, y: 214 },
+    { id: 'S7', title: 'Refund in history', assignee: 'Priya', tasks: 0, deps: ['S5'], x: 742, y: 112 }
   ];
   var byId = {};
-  nodes.forEach(function (n) { byId[n.id] = n; n.y = storyById[n.story].y + 24; });
+  nodes.forEach(function (n) { byId[n.id] = n; });
   var state, who = 'Priya';
-  function reset() { state = { done: { T1: true }, claimed: { T8: 'Ade' } }; }
-  function storyState(st) {
-    var ss = nodes.filter(function (n) { return n.story === st.id && !n.gate; }).map(status);
-    if (ss.every(function (s) { return s === 'done'; })) return 'done';
-    if (ss.some(function (s) { return s === 'ready' || s === 'claimed'; })) return 'in play';
-    if (ss.some(function (s) { return s === 'gated'; })) return 'waiting on the client';
-    return 'waiting on another story';
+  function reset() {
+    nodes.forEach(function (n) { n.who = n.assignee; });
+    state = {
+      done: { S1: true }, started: { S2: true }, approved: { S2: true },
+      /* each task: { st: 'todo' | 'doing' | 'done', who: name or '' } */
+      tasks: { S1: [{ st: 'done', who: 'Sam' }, { st: 'done', who: 'Sam' }], S2: [{ st: 'done', who: 'Ade' }, { st: 'todo', who: '' }] }
+    };
+    nodes.forEach(function (n) {
+      if (!n.gate && !state.tasks[n.id]) { state.tasks[n.id] = []; for (var i = 0; i < n.tasks; i++) state.tasks[n.id].push({ st: 'todo', who: '' }); }
+    });
   }
+  function open(n) { return n.deps.filter(function (d) { return !state.done[d]; }); }
+  function doneCount(n) { return (state.tasks[n.id] || []).filter(function (t) { return t.st === 'done'; }).length; }
   function status(n) {
     if (state.done[n.id]) return 'done';
     if (n.gate) return 'gate';
-    if (!n.deps.every(function (d) { return state.done[d]; })) {
-      return n.deps.some(function (d) { return byId[d].gate && !state.done[d]; }) ? 'gated' : 'blocked';
+    if (state.started[n.id]) {
+      if (n.tasks && !state.approved[n.id]) return 'approve';
+      return doneCount(n) === n.tasks ? 'finishing' : 'doing';
     }
-    return state.claimed[n.id] ? 'claimed' : 'ready';
+    var o = open(n);
+    if (o.length) return o.some(function (d) { return byId[d].gate; }) ? 'gated' : 'blocked';
+    return 'ready';
   }
   function unblocks(id) {
     var seen = {}, stack = [id], count = 0;
@@ -763,23 +768,47 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
     }
     return count;
   }
+  /* What selecting a story does for the current developer, or null if nothing */
+  function storyAction(n, s) {
+    if (s === 'gate') return 'Mark as decided.';
+    if (s === 'ready') return n.who === who ? 'Start it.' : 'Start it and become its assignee.';
+    if (s === 'blocked' || s === 'gated') return 'Start it knowingly' + (n.who === who ? '.' : ' and become its assignee.');
+    if (s === 'approve' && n.who === who) return 'Approve its tasks.';
+    if (s === 'finishing' && !open(n).length) return 'Confirm it done.';
+    return null;
+  }
   function act(n) {
     var s = status(n);
+    if (!storyAction(n, s)) return;
     if (s === 'gate') state.done[n.id] = true;
-    else if (s === 'ready') state.claimed[n.id] = who;
-    else if (s === 'claimed') { state.done[n.id] = true; delete state.claimed[n.id]; }
-    else return;
+    else if (s === 'ready' || s === 'blocked' || s === 'gated') { state.started[n.id] = true; n.who = who; }
+    else if (s === 'approve') state.approved[n.id] = true;
+    else if (s === 'finishing') state.done[n.id] = true;
     draw(n.id);
+  }
+  /* A task can be taken once its story is in progress with approved tasks; it is moved on only by whoever took it */
+  function taskAction(n, t) {
+    if (status(n) !== 'doing') return null;
+    if (t.st === 'todo') return 'Assign it to yourself and start it.';
+    if (t.st === 'doing' && t.who === who) return 'Mark it done.';
+    return null;
+  }
+  function actTask(n, i) {
+    var t = state.tasks[n.id][i];
+    if (!taskAction(n, t)) return;
+    if (t.st === 'todo') { t.st = 'doing'; t.who = who; } else t.st = 'done';
+    draw(n.id + '-' + i);
+  }
+  function button(g, label, fn) {
+    g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button'); g.setAttribute('aria-label', label);
+    g.addEventListener('click', function (e) { e.stopPropagation(); fn(); });
+    g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.stopPropagation(); fn(); } });
   }
   var svg = document.getElementById('graph');
   var list = document.getElementById('readylist'), empty = document.getElementById('readyempty');
+  var stWord = { todo: 'to do', doing: 'in progress', done: 'done' };
   function draw(focusId) {
     while (svg.firstChild) svg.removeChild(svg.firstChild);
-    stories.forEach(function (st) {
-      svg.appendChild(el('rect', { 'class': 'lane', x: 0, y: st.y, width: 960, height: 90, rx: 10 }));
-      svg.appendChild(el('text', { x: 12, y: st.y + 16, 'class': 'k' }, st.title + ' · owner ' + st.owner));
-      svg.appendChild(el('text', { x: 948, y: st.y + 16, 'text-anchor': 'end', 'class': 's m' }, storyState(st)));
-    });
     nodes.forEach(function (n) {
       n.deps.forEach(function (d) {
         var s = byId[d];
@@ -788,31 +817,50 @@ th { font-weight: 600; color: var(--muted); font-size: 13px; }
     });
     var ready = [];
     nodes.forEach(function (n) {
-      var s = status(n), u = unblocks(n.id);
-      var cls = s === 'gated' ? 'blocked' : s;
-      var label = { done: n.gate ? 'decided' : 'done', gate: 'open: select to decide', ready: 'ready · unblocks ' + u, claimed: 'in progress · ' + state.claimed[n.id], blocked: 'blocked', gated: 'waiting on the client' }[s];
-      var actionable = s === 'ready' || s === 'claimed' || s === 'gate';
-      var g = el('g', { 'class': 'node st-' + cls + (actionable ? ' act' : ''), 'data-id': n.id });
-      if (actionable) {
-        g.setAttribute('tabindex', '0'); g.setAttribute('role', 'button');
-        g.setAttribute('aria-label', n.title + ', ' + label + '. ' + (s === 'ready' ? 'Claim it.' : s === 'claimed' ? 'Finish it.' : 'Mark as decided.'));
-        g.addEventListener('click', function () { act(n); });
-        g.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); act(n); } });
+      var s = status(n), u = unblocks(n.id), stuck = open(n).length > 0;
+      var cls = { gated: 'blocked', finishing: 'doing', approve: 'doing' }[s] || s;
+      var label = {
+        done: n.gate ? 'decided' : 'done · confirmed',
+        gate: 'open · select to decide',
+        ready: 'ready' + (u ? ' · unblocks ' + u : ''),
+        approve: n.who === who ? 'in progress · approve tasks' : 'tasks to approve',
+        doing: stuck ? 'started knowingly' : 'in progress · ' + doneCount(n) + ' of ' + n.tasks + ' done',
+        finishing: stuck ? 'tasks done · dependency open' : 'tasks done · confirm',
+        blocked: 'blocked',
+        gated: 'waiting on the client'
+      }[s];
+      var hint = storyAction(n, s);
+      var g = el('g', { 'class': 'node st-' + cls + (hint ? ' act' : ''), 'data-id': n.id });
+      var summary = n.gate ? ', client input' : ', assignee ' + n.who + ', ' + (n.tasks ? doneCount(n) + ' of ' + n.tasks + ' tasks done' : 'no tasks');
+      if (hint) button(g, n.title + summary + ', ' + label + '. ' + hint, function () { act(n); });
+      g.appendChild(el('rect', { x: n.x, y: n.y, width: W, height: H, rx: n.gate ? 30 : 8 }));
+      g.appendChild(el('text', { x: n.x + 14, y: n.y + 22, 'class': 'b' }, (n.gate ? 'Client: ' : '') + n.title));
+      if (n.gate) g.appendChild(el('text', { x: n.x + 14, y: n.y + 40, 'class': 's m' }, 'an input, never assigned'));
+      else {
+        g.appendChild(el('text', { x: n.x + 14, y: n.y + 40, 'class': 's m' }, 'assignee ' + n.who));
+        if (!n.tasks) g.appendChild(el('text', { x: n.x + W - 14, y: n.y + 40, 'text-anchor': 'end', 'class': 's m' }, 'no tasks'));
       }
-      g.appendChild(el('rect', { x: n.x, y: n.y, width: W, height: H, rx: n.gate ? 28 : 8 }));
-      g.appendChild(el('text', { x: n.x + 14, y: n.y + 24, 'class': 'b' }, (n.gate ? 'Client: ' : '') + n.title));
-      g.appendChild(el('text', { x: n.x + 14, y: n.y + 42, 'class': 's m stt' }, label));
+      g.appendChild(el('text', { x: n.x + 14, y: n.y + 58, 'class': 's m stt' }, label));
       svg.appendChild(g);
+      if (!n.gate) state.tasks[n.id].forEach(function (t, i) {
+        var tx = n.x + W - 10 - (n.tasks - i) * (TW + TG) + TG, ty = n.y + 28;
+        var ta = taskAction(n, t);
+        var tg = el('g', { 'class': 'tk ' + t.st + (ta ? ' act' : ''), 'data-id': n.id + '-' + i });
+        tg.appendChild(el('rect', { x: tx, y: ty, width: TW, height: 16, rx: 3 }));
+        if (t.who) tg.appendChild(el('text', { x: tx + TW / 2, y: ty + 12, 'text-anchor': 'middle' }, t.who.charAt(0)));
+        if (ta) button(tg, 'Task ' + (i + 1) + ' of ' + n.title + ', ' + stWord[t.st] + (t.who ? ', ' + t.who : '') + '. ' + ta, function () { actTask(n, i); });
+        svg.appendChild(tg);
+      });
       if (s === 'ready') ready.push({ n: n, u: u });
     });
-    ready.forEach(function (r) { r.owner = storyById[r.n.story].owner; r.mine = r.owner === who; });
+    ready.forEach(function (r) { r.mine = r.n.who === who; });
     ready.sort(function (a, b) { return (b.mine - a.mine) || (b.u - a.u); });
     list.innerHTML = '';
     ready.forEach(function (r) {
       var li = document.createElement('li');
       li.textContent = r.n.title;
       var sm = document.createElement('small');
-      sm.textContent = (r.mine ? 'your story' : r.owner + "'s story") + ' · ' + (r.u ? 'unblocks ' + r.u + (r.u === 1 ? ' task' : ' tasks') : 'unblocks nothing else');
+      sm.textContent = (r.mine ? 'assigned to you' : 'assigned to ' + r.n.who) + ' · ' + (r.u ? 'unblocks ' + r.u + (r.u === 1 ? ' story' : ' stories') : 'unblocks nothing else') + ' · ' + (r.n.tasks ? r.n.tasks + (r.n.tasks === 1 ? ' task' : ' tasks') : 'no tasks');
       li.appendChild(sm);
       list.appendChild(li);
     });

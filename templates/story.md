@@ -15,7 +15,7 @@
 
 ## Depends on
 
-<Stories that must land first>
+- <Stories or inputs that must be done first>
 
 ## Blocked on
 
