@@ -9,7 +9,7 @@ The method is backed by two kinds of tooling. Packages hold everything with one 
 | Layer | Form | Runs in | Holds |
 | --- | --- | --- | --- |
 | Method | Document | Nowhere | The written framework, tool-neutral |
-| Engine, adapters, actions | npm packages | Terminal, git hooks, CI, any coding agent | Status, the ready set, claims, tracker updates, project checks |
+| Engine, adapters, actions | npm packages | Terminal, git hooks, CI, any coding agent | Status, the ready set, assignees, tracker updates, project checks |
 | Skills | Claude Code plugins | Claude Code | Wording, splitting, direction, review |
 
 Three plugins, in one marketplace named `tandem`:
@@ -17,7 +17,7 @@ Three plugins, in one marketplace named `tandem`:
 | Plugin | For | Does |
 | --- | --- | --- |
 | `slipstream` | Whoever plans a project | Draws up the stories and the dependency graph between them for each release |
-| `dev` | Every developer | Shows which stories are ready, records claims, keeps each story's plan, and covers commit, pull request, review and decision records |
+| `dev` | Every developer | Shows which stories are ready, starts stories, keeps each story's tasks and who is on them, and covers commit, pull request, review and decision records |
 | `docs` | Anyone | House-style documents |
 
 A developer needs `dev` only. Neither plugin depends on the other; both call the same package.
@@ -47,23 +47,25 @@ All three are the same operations over the same core. An agent asking for the re
 | Command | Does |
 | --- | --- |
 | `init` | Writes the project's configuration file and the workflow that calls the sync action, and lists the secrets to add |
-| `ready [--for NAME]` | Lists ready stories, with what each unblocks and who owns it |
-| `claim ID --by NAME`, `release ID`, `done ID` | Records a start on a story, drops it, or proposes it done |
-| `tick ID STEP` | Ticks a step in a story's plan |
-| `add`, `split`, `link`, `unlink` | Edits stories, their plans and the links between stories and inputs |
-| `status` | Each story's status, from its dependencies and its claim: blocked, ready, in progress or done |
-| `validate` | Finds cycles, links to missing items, links to or from a step, and stories with no owner |
+| `ready [--for NAME]` | Lists ready stories, with what each unblocks and who it is assigned to |
+| `start ID --by NAME`, `stop ID`, `done ID` | Starts a story, making the named person its assignee; stops it; or proposes it done |
+| `approve ID` | Records that the story's assignee has approved its tasks |
+| `task ID --by NAME`, `task ID --status STATUS` | Assigns a task, or sets its status: To do, In progress or Done |
+| `add`, `split`, `link`, `unlink` | Edits stories, their tasks and the links between stories and inputs |
+| `status` | Each story's status, and each task's status and assignee |
+| `validate` | Finds cycles, links to missing items, links to or from a task, and stories with no assignee |
 | `graph` | Draws the graph |
 | `sync` | Applies a repository event to the tracker (see section 4) |
 
 Rules it enforces:
 
-- Only stories are claimed, blocked, ready or done. Steps are never claimed, blocked or pulled, and are never linked.
-- Status is computed from links and the claim, and is never set by hand.
-- A dependency is information, not a lock: a blocked story stays out of the ready set, but `claim` still records a knowing start, and says what is open.
-- A claim always names a person; a name is never inferred.
+- Only stories are blocked, ready or linked. A task is never blocked, never linked and never in the ready set.
+- Blocked and ready are computed from links, and are never set by hand.
+- Every story has one assignee. Starting a story names a person, who becomes its assignee; a name is never inferred.
+- A dependency is information, not a lock: a blocked story stays out of the ready set, but `start` still records a knowing start, and says what is open.
+- A task can be assigned only once its story is in progress and its tasks are approved. Its status is set by whoever works on it.
 - A client decision blocks until the technical PM settles it.
-- A story is proposed done when every step is ticked, and confirmed done by a person only when every criterion is proved.
+- A story is proposed done when every task is done, and confirmed done by a person only when every criterion is proved.
 
 There is one implementation of these rules. Anything else that shows story status, such as a personal dashboard, reads this package's output instead of working status out again. Two programs computing status separately would disagree in edge cases.
 
@@ -71,18 +73,17 @@ There is one implementation of these rules. Anything else that shows story statu
 
 The tracker is the single source of truth. The package reads through an adapter, computes, and writes back. Nothing is kept in a second copy, so nothing has to be synchronised.
 
-Each tracker has its own interface. The adapter is the only place that knows it; everything above the adapter speaks in stories, steps, links, claims and owners.
+Each tracker has its own interface. The adapter is the only place that knows it; everything above the adapter speaks in stories, tasks, links and assignees.
 
 Each adapter implements the same operations:
 
 | Operation | Meaning |
 | --- | --- |
-| Read items | Epics, stories and the steps in their plans, with their fields |
+| Read items | Epics, stories and their tasks, with their fields |
 | Write item | Create or update one |
 | Read and write links | Which story depends on which story or input |
-| Read and write claim | Who started a story and when |
-| Tick a step | Mark one step in a story's plan as done |
-| Read and write owner | Who owns a story |
+| Read and write assignee | Who a story or a task is assigned to |
+| Read and write status | A story's start and done, and a task's To do, In progress or Done |
 | Comment | Post a proposal on a story |
 
 Each adapter declares what its tracker supports. Where a tracker has no real dependency link, the adapter falls back to reading and writing the "Depends on" section of the ticket.
@@ -91,19 +92,19 @@ Each adapter declares what its tracker supports. Where a tracker has no real dep
 | --- | --- | --- | --- |
 | Epic | Epic | Parent issue | Folder with `epic.md` |
 | Story | Story | Sub-issue of the epic | Folder with `story.md` |
-| Step | Subtask: never assigned or transitioned on its own | Sub-issue of the story: never assigned or closed on its own | One file in the story's folder, numbered in plan order |
+| Task | Subtask, with its own assignee and status | Sub-issue of the story, with its own assignee and open or closed state | One file in the story's folder |
 | Link | "Blocks" link between stories | "Blocked by" relation between stories | Frontmatter list of ids on `story.md` |
 | Release | Fix version | Milestone | Frontmatter field on the story |
 | Priority | Label or field | Project field | Frontmatter field |
-| Owner | Custom field | Project field | Frontmatter field |
-| Claim | Assignee and status, on the story | Assignee, on the story | Frontmatter fields on `story.md` |
+| Assignee | Assignee, on the story and on each subtask | Assignee, on the story and on each sub-issue | Frontmatter field on `story.md` and on each task file |
+| Status | Workflow status, on the story and on each subtask | Project status field, or open and closed | Frontmatter field on `story.md` and on each task file |
 | Client decision | Linked issue | Labelled issue | One file |
 
 A project names its adapter, and how its fields are named, in one configuration file in the repository. Adding a tracker means writing one adapter.
 
 What each tracker supports, as checked on 15 November 2026:
 
-| Tracker | Dependency links | Steps under stories | Checked how |
+| Tracker | Dependency links | Tasks under stories | Checked how |
 | --- | --- | --- | --- |
 | Jira | Yes: a "Blocks" link type | Yes: Subtask type | Read from a live Jira site in use |
 | GitHub | Yes: "blocked by" relation | Yes: sub-issues | Called on a live repository |
@@ -111,7 +112,7 @@ What each tracker supports, as checked on 15 November 2026:
 
 ### Markdown layout
 
-Epics and stories are folders. Each step in a story's plan is its own file in the story's folder, numbered in plan order, and holds only its text and whether it is ticked. The story's release, owner, claim and dependencies are fields on `story.md`: release because releases cut across epics, and the rest because the story is the unit that is claimed and linked.
+Epics and stories are folders. Each task is its own file in the story's folder, with its own assignee and status. The story's release, assignee, status and dependencies are fields on `story.md`: release because releases cut across epics, and dependencies because only stories are linked.
 
 ```text
 tickets/
@@ -119,8 +120,8 @@ tickets/
     epic.md
     <story>/
       story.md
-      01-<step>.md
-      02-<step>.md
+      <task>.md
+      <task>.md
   decisions/
     <client decision>.md
   archive/
@@ -129,7 +130,7 @@ tickets/
         <story>/
 ```
 
-When a release is accepted, its stories move, with their plans, to `archive/<release>/`. The live tree then holds only work that is still ahead.
+When a release is accepted, its stories move, with their tasks, to `archive/<release>/`. The live tree then holds only work that is still ahead.
 
 ### Monday: parked
 
@@ -147,16 +148,16 @@ A package cannot run a workflow by itself: an event only fires a workflow file i
 | A reusable workflow | Packages repository, public | Installs the package and runs `sync` |
 | The trigger | Each project, written by `init` | About five lines and a version pin |
 
-A story's branch and its pull requests, stacked if need be, belong to the story and are reviewed as one feature. Each pull request names the steps it covers.
+A story's branches and pull requests, stacked if need be, belong to the story and are reviewed as one feature, even when different people took its tasks. Each pull request names the tasks it closes.
 
 What `sync` does with each event:
 
 | Event | Effect on the tracker |
 | --- | --- |
-| Branch pushed whose name carries a story id | Story shown as in progress. A start only: ticking a step still needs the explicit `Closes` line below |
+| Branch pushed whose name carries a story or task id | That task, or the story if it was not yet started, shown as in progress. A start only: closing a task still needs the explicit `Closes` line below |
 | Pull request opened | Listed on its story for review; the story stays in progress |
-| Pull request merged | The steps it covers are ticked. When every step is ticked, the story is proposed done; once a person confirms it, newly unblocked stories become ready |
-| Branch with no recent commits | Claim flagged as stale; nothing changed |
+| Pull request merged | The tasks it closes move to Done. When every task is done, the story is proposed done; once a person confirms it, newly unblocked stories become ready |
+| Branch with no recent commits | The story or task flagged as stale; nothing changed |
 
 The same command runs by hand when CI is unavailable.
 
@@ -166,7 +167,7 @@ Rules carried over from two tracker syncs already run on real projects:
 
 | Rule | Why |
 | --- | --- |
-| A pull request links to a story, and ticks a step, only by an explicit `Closes <id>` line in its title or description | A branch name or a passing mention is not an instruction |
+| A pull request links to a story, and closes a task, only by an explicit `Closes <id>` line in its title or description | A branch name or a passing mention is not an instruction |
 | An id inside backticks or a code block is ignored | Documentation describing the syntax once moved live tickets |
 | A pull request with no ticket fails a check, with one comment saying how to fix it; a `no-ticket` label clears it | Chores and CI changes have no ticket, and should not need an invented one |
 | A status the sync does not recognise was set by a person and is left alone, with a warning | The board is the client's view; a person's move outranks the automation |
@@ -205,7 +206,7 @@ With a ticket: `<type>/<ticket id>-<short description>`. Without one: `<type>/<s
 | Part | Rule | Example |
 | --- | --- | --- |
 | Type | The same list as commit types: `feat`, `fix`, `refactor`, `perf`, `docs`, `test`, `chore`, `build`, `ci` | `feat` |
-| Ticket id | The story's id as the tracker gives it. Required for `feat`, `fix`, `refactor` and `perf`; optional for the rest, which may have no ticket | `t2dv-74`, `107` |
+| Ticket id | The story's id, or the task's id for a branch that covers one task, as the tracker gives it. Required for `feat`, `fix`, `refactor` and `perf`; optional for the rest, which may have no ticket | `t2dv-74`, `107` |
 | Description | A few words from the story's title | `cancel-booking` |
 | Date | Only when there is no ticket id: the day the branch is cut, as `DDMMYYYY`, so the name is unique | `15112026` |
 
@@ -215,19 +216,20 @@ The ticket id format is set per project in its configuration file, since each tr
 
 ## 6. Who may change what
 
-The technical PM draws the graph between stories and inputs. Developers adjust the plan inside a story, with its owner's approval. Changes to links between stories go back to the technical PM.
+The technical PM draws the graph between stories and inputs and assigns the stories. Developers adjust the tasks inside a story, with its assignee's approval. Changes to links between stories go back to the technical PM.
 
 | Change | `slipstream` | `dev` |
 | --- | --- | --- |
 | Create epics, releases, stories | Yes | No |
 | Change a story's criteria, priority or release | Yes | No |
 | Draw the dependency graph for a release | Yes | No |
-| Name or change a story's owner | Yes | No |
+| Assign a story before it starts | Yes | No |
 | Add or settle a client decision | Yes | No |
-| Add, split or reorder a step in a story's plan | Yes | Yes, approved by the story owner |
+| Add or split a task in a story | Yes | Yes, approved by the story's assignee |
 | Add or remove a link between stories, or to an input | Yes | Proposes only |
-| Claim, release or propose done for a story | | Yes |
-| Tick a step | | Yes |
+| Start a story, becoming its assignee; stop it; propose it done | | Yes |
+| Approve a story's tasks | | Yes, the story's assignee |
+| Assign yourself a task and set its status | | Yes, once the story is in progress and its tasks approved |
 
 Where `dev` may not make a change, it writes the proposal as a comment on the story for the technical PM and makes no edit. This is a working agreement the skills follow, not access control.
 
@@ -242,7 +244,7 @@ Skills are thin. Each calls the package and applies judgement to what comes back
 | `map` | Contract documents and scope | Epics, releases with outcomes and dates, and every story with an estimate and a first priority, shown for approval and then written to the tracker |
 | `story` | An idea, or an existing story | One story in the standard format: outcome, requirements table, not included, acceptance criteria, depends on (stories and inputs), blocked on |
 | `split` | A story over two days, hiding an unknown, or only partly needed by another | Two or more stories, split on one axis, with the reason |
-| `plan-release` | A release whose stories are signed off | Links between stories and inputs, client decisions, owners, and a first plan for stories that need one, drafted from the code as it is, corrected by the technical PM, then written |
+| `plan-release` | A release whose stories are signed off | Links between stories and inputs, client decisions, assignees, and first tasks for stories that need them, drafted from the code as it is, corrected by the technical PM, then written |
 | `review-release` | A release ready for the client | The outcome and each story's criteria laid out as a test script for the client, then a record of the result |
 | `replan` | What the client found | Proposed changes to later stories and releases, for approval |
 
@@ -250,15 +252,15 @@ Skills are thin. Each calls the package and applies judgement to what comes back
 
 | Skill | Input | Output |
 | --- | --- | --- |
-| `ready` | Nothing, or a developer's name | The ready stories: own stories first, then others, each by how many stories it unblocks |
-| `claim` | A story | The story marked as started by a named person, or the claim dropped. A blocked story can be claimed knowingly, and the open dependencies are named |
-| `plan` | A claimed story, or a change to its plan | The story's plan drafted from today's code for the owner to approve, or a step added, split or reordered, within the limits in section 6 |
-| `branch` | A story, usually the one just claimed | A branch named `<type>/<ticket id>-<short description>`, cut from the main branch, or stacked on the branch of a story it depends on that has not merged yet. Paired with the branch gate hook in section 5 |
+| `ready` | Nothing, or a developer's name | The ready stories: those assigned to the developer first, then others, each by how many stories it unblocks. Also lists open tasks in stories already in progress, for anyone free to help |
+| `start` | A story | The story started by a named person, who becomes its assignee, or stopped. A blocked story can be started knowingly, and the open dependencies are named |
+| `task` | A started story, a task in one, or a change to its tasks | The story's tasks drafted from today's code for its assignee to approve; a task assigned to the developer or its status changed; or a task added or split, within the limits in section 6 |
+| `branch` | A story or task, usually the one just started | A branch named `<type>/<ticket id>-<short description>`, cut from the main branch, or stacked on the branch of a story it depends on that has not merged yet. Paired with the branch gate hook in section 5 |
 | `commit` | Staged or pending changes | Single-line commits, split by concern, each staged by exact path and checked before it is made. Paired with the commit gate hook in section 5 |
-| `pr` | A finished branch | A pull request that names the steps it covers and proves their acceptance criteria with real output |
+| `pr` | A finished branch | A pull request that names the tasks it closes and proves their acceptance criteria with real output |
 | `review` | A pull request or branch | Findings on content, each probed before it is reported |
 | `address-review` | Unresolved review comments | Each claim reproduced, fixed and proved, one at a time |
-| `stack` | A story whose steps go in more than one pull request, or that builds on unmerged work | Stacked branches and pull requests, reviewed together as one feature |
+| `stack` | A story whose tasks go in more than one pull request, or that builds on unmerged work | Stacked branches and pull requests, reviewed together as one feature |
 | `adr` | A material, non-obvious decision | A numbered decision record in the repository |
 
 ### `docs`
@@ -295,7 +297,7 @@ What stays personal: voice and persona, output styles, hooks that prompt or nag,
 | Names | Marketplace `tandem`; plugins `slipstream`, `dev`, `docs` |
 | Who uses what | `slipstream` for whoever plans; `dev` for every developer |
 | Trackers | Jira and GitHub first, then markdown. Monday parked |
-| Markdown layout | Folders for epics and stories, one file per step, archived by release |
+| Markdown layout | Folders for epics and stories, one file per task, archived by release |
 | Acceptance criteria style | Scenarios or tagged one-liners, chosen per project in its configuration file |
 | Tracker credentials | A set-up step per project: a secret in the repository, listed by `init` |
 
