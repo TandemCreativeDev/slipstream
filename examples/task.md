@@ -1,6 +1,6 @@
 # Refund payment
 
-Story: Guests can cancel a booking · Step 2 of 3
+Story: Guests can cancel a booking · Assignee: Priya · In progress
 
 Add the endpoint that cancels a booking and returns the refund amount.
 
