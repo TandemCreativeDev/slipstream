@@ -135,7 +135,7 @@ Use the [task template](templates/task.md). See a [worked example](examples/task
 
 ## Dependencies and the ready set
 
-There is one dependency graph per release. It is drawn between tasks and runs across stories: a task may depend on a task in another story, or on a client decision.
+There is one dependency graph per release. It is drawn between tasks and runs across stories: a task may depend on a task in another story, or on an input such as a client decision.
 
 The graph is built from each task's "Depends on". Record it as a dependency link where the tracker has one, so the ready set can be computed instead of read off the ticket text.
 
@@ -158,7 +158,7 @@ How tasks are run:
 - **Status is computed** from dependencies, not set by hand.
 - **Work is pulled** from the ready set: every unblocked, unclaimed task, the one that unblocks most first.
 - **Starting is a claim** by a named person. Nobody is given a start they did not make.
-- **A client decision the work waits on is a gate**, visible alongside the tasks it blocks.
+- **Anything the work needs but nobody builds is an input**: a decision, an approval, information or a deliverable. It is owned by the client or a third party, never by the team, and its owner closes it. It sits in the graph alongside the tasks it holds up, and is never in the ready set. A decision the team must make is a task, not an input.
 - **Done is confirmed by a person.** An agent may propose it, with evidence.
 
 ## Decision records
@@ -199,6 +199,18 @@ Slipstream is defined by its concepts, not a tool.
 | Estimate | Original estimate | Project number field | Numbers column |
 | Dependency | "Blocks" link | "Blocked by" relation | Dependency column |
 | Claim | Assignee and In Progress | Assignee | Person column |
-| Client gate | Linked issue on the client | Labelled issue | Item in a client group |
+| Input | Linked issue, labelled with its type | Issue labelled with its type | Item in an inputs group |
 
 Each level has one source of truth. Stories live in the tracker the client reads. Tasks live either there or in the repository, with the other as a mirror. Decision records always live in the repository.
+
+## Terms
+
+Words that are easy to confuse. Slipstream uses each in this sense only.
+
+| Term | Kind | Meaning |
+| --- | --- | --- |
+| Dependency | Link | "B depends on A" means B cannot start until A is done. A may be a task or an input |
+| Blocked | Status | Computed. A task is blocked while any of its dependencies is open. When only inputs hold it, it shows as waiting on their owner, such as "waiting on the client" |
+| Blocker | Derived label | An open item that is stopping a task which would otherwise be ready. Never an item type, and not a priority as in Jira |
+| Input | Item | Something the work needs that nobody builds: a decision, an approval, information or a deliverable. Has a type and an owner outside the team: the client or a third party. Never claimed or pulled |
+| Release acceptance | Event | The client's written sign-off at the release review. The only point where the client approves the release as a whole |
