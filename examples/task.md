@@ -1,13 +1,8 @@
 # Refund payment
 
-Story: Guests can cancel a booking
+Story: Guests can cancel a booking · Step 2 of 3
 
 Add the endpoint that cancels a booking and returns the refund amount.
-
-## Depends on
-
-- Bookings store (this story)
-- Sign-in session (story: Guests can sign in)
 
 ## Proves
 
