@@ -1,9 +1,5 @@
 <What changes, in one sentence>
 
-## Depends on
-
-- <Tasks, or a client decision>
-
 ## Proves
 
 - <Criterion number, and its text>
