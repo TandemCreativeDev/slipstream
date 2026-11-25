@@ -13,7 +13,7 @@ The name is from cycling: each accepted release clears the air for the next, and
 3. **Outline far ahead, detail close up.** Stories for the project; tasks for the next release only.
 4. **Outcomes and budget hold; depth flexes.** What the contract promises is delivered within the days agreed. How far each outcome is taken is what gives way. Dates are targets.
 5. **Acceptance criteria are the contract.** What is in them is required and proven. What is not in them is not required.
-6. **People steer; agents investigate and build.** Agents draft plans, break stories into tasks and write code. People set priorities, approve plans and merge.
+6. **People steer; agents investigate and build.** Agents draft plans, break stories into tasks and write code. People set priorities, approve plans, review and merge, and merging is what closes the work.
 7. **Decisions are written down once.** A material, non-obvious decision gets a decision record.
 
 ## Structure
@@ -159,7 +159,7 @@ How tasks are run:
 - **Work is pulled** from the ready set: every unblocked, unclaimed task, the one that unblocks most first.
 - **Starting is a claim** by a named person. Nobody is given a start they did not make.
 - **Anything the work needs but nobody builds is an input**: a decision, an approval, information or a deliverable. It is owned by the client or a third party, never by the team, and its owner closes it. It sits in the graph alongside the tasks it holds up, and is never in the ready set. A decision the team must make is a task, not an input.
-- **Done is confirmed by a person.** An agent may propose it, with evidence.
+- **Work closes when its pull request merges.** A pull request names the work it closes. Opening it puts that work in review, and the person who reviews and merges it confirms it done. An agent opens pull requests like everyone else, and never closes work itself.
 
 ## Decision records
 
