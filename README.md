@@ -80,6 +80,15 @@ When a release is forecast to exceed its days:
 
 Removed means removed. A removed story may return in a later release or a later contract, but that is never assumed.
 
+### Which Coulds fit
+
+A release's room is its budget, less the days used, less what its Musts and Shoulds still need. It is a forecast, so it moves as time is logged.
+
+- Coulds take the room in the order agreed with the client. Each Could that fits is ready to build; the first that does not fit, and every Could after it, is out, even if a later one is small enough. The client's order holds; to change what fits, change the order.
+- The order of the Coulds is part of the agreement. Changing it after the client has agreed is a plan change, with a reason the client sees.
+- A Could that fits can be started at once, but it is the release's room to give, so starting one is a choice made knowingly, not by default.
+- A Could that is out is not built. A Could already started when it stops fitting is finished, not dropped halfway.
+
 Dates are targets. A date moves by agreement when the calendar is the problem: a client decision arrives late, or people are unavailable. Moving a date does not create days, so it never fixes an overrun in effort. Where a client does have a date that matters more than the budget, say so in the contract and plan that release against the date.
 
 ## Stories
